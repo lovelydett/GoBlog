@@ -1,0 +1,131 @@
+{{define "home.html"}}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 页面背景颜色 -->
+    <style type="text/css">
+        .body {background-color: #cba8b8;
+            background-size:100%;
+        }
+    </style>
+
+    <title>tt小家</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入 Bootstrap -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+    <!-- HTML5 Shiv 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+    <!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class = "body" style="padding-top: 30pt;">
+    <!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- 包括所有已编译的插件 -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <!-- todo: 头版巨幕 -->
+    <h1 class="text-center">为什么？为什么？为什么我这么帅！</h1>
+
+    <!-- 导航栏 -->
+    <div class = "container-fluid" style="padding-top: 30pt">
+        <ul class="nav nav-tabs nav-justified">
+            <li role="presentation" class="active"><a href="#">Home</a></li>
+            <li role="presentation"><a href="/article">Article</a></li>
+            <li role="presentation"><a href="#">Album</a></li>
+            <li role="presentation"><a href="#">Funny Things</a></li>
+        </ul>
+    </div>
+
+    <!-- 左分类列表3 右文章列表9-->
+    <div class = "container-fluid" style="padding-top: 30pt">
+
+        <!-- 左分类列表 pc占3 移动端占满12列-->
+        <div class="list-group col-md-3 col-12">
+            <h4 style="text-align: center"><strong>文章分类</strong></h4>
+            <a href="#" class="list-group-item disabled">
+                C++
+            </a>
+            <a href="#" class="list-group-item">Go</a>
+            <a href="#" class="list-group-item">前端</a>
+            <a href="#" class="list-group-item">算法数据结构</a>
+            <a href="#" class="list-group-item">其他</a>
+        </div>
+
+
+        <!-- 右文章列表 pc9 移动端12-->
+        <div class="list-group col-md-9 col-12">
+            <h4 style="text-align: center"><strong>最新文章</strong></h4>
+            <a href="#" class="list-group-item active">
+                <h4 class="list-group-item-heading">List group item heading</h4>
+                <p class="list-group-item-text">...</p>
+            </a>
+            <a href="#" class="list-group-item">
+                <h4 class="list-group-item-heading">List group item heading</h4>
+                <p class="list-group-item-text">...</p>
+            </a>
+            <a href="#" class="list-group-item">
+                <h4 class="list-group-item-heading">List group item heading</h4>
+                <p class="list-group-item-text">...</p>
+            </a>
+            <a href="#" class="list-group-item">
+                <h4 class="list-group-item-heading">List group item heading</h4>
+                <p class="list-group-item-text">...</p>
+            </a>
+        </div>
+
+
+    </div>
+
+    <!-- 分割线 -->
+    <div class="divider"></div>
+
+    <!-- funny things-->
+    <div class = "container-fluid" style="padding-top: 30pt">
+        <h3 style="text-align: center">Funny works of mine</h3>
+        <div class="center-block">
+            <a class="col-md-3 col-6" style="text-align: center"> LikeCam</a>
+            <a class="col-md-3 col-6" style="text-align: center"> TuTu</a>
+            <a class="col-md-3 col-6" style="text-align: center"> 禾谷科技</a>
+            <a class="col-md-3 col-6" style="text-align: center"> Other</a>
+        </div>
+    </div>
+
+    <!-- 友情链接-->
+    <div class = "container-fluid " style="padding-top: 30pt">
+        <h3 style="text-align: center">Funny works of my fren</h3>
+        <div class="center-block">
+            <a class="col-md-3 col-6" style="text-align: center"> LikeCam</a>
+            <a class="col-md-3 col-6" style="text-align: center"> TuTu</a>
+            <a class="col-md-3 col-6" style="text-align: center"> 禾谷科技</a>
+            <a class="col-md-3 col-6" style="text-align: center"> Other</a>
+        </div>
+    </div>
+
+    <!-- 照片墙 -->
+    <div class = "container-fluid " style="padding-top: 30pt">
+        <h3 style="text-align: center">We</h3>
+
+    </div>
+
+
+</body>
+<footer class="footer" style="padding-top: 30pt; padding-bottom: 30pt">
+    <div class="container">
+        <div class="row footer-bottom">
+            <ul class="list-inline text-center">
+                <li>Powered by <a href="https://beego.me/" target="_blank">Beego</a> and <a href="https://www.bootcss.com" target="_blank">Bootstrap</a></li>
+                <li>Contact : xytxytxyt@hotmail.com / 13826092013</li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</html>
+
+{{end}}

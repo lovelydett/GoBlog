@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 页面背景颜色 -->
+    <style type="text/css">
+        .body {background-color: #cba8b8;
+            background-size:100%;
+        }
+        .active {background-color: #720f92;
+            background-size:100%;
+        }
+    </style>
+
+    <title>tt小家</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入 Bootstrap -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+    <!-- HTML5 Shiv 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+    <!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class = "body" style="padding-top: 30pt;">
+<!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
+<script src="https://code.jquery.com/jquery.js"></script>
+<!-- 包括所有已编译的插件 -->
+<script src="/static/js/bootstrap.min.js"></script>
+
+<!-- todo: 头版巨幕 -->
+<h1 class="text-center">为什么？为什么？为什么我这么帅！</h1>
+
+<!-- 导航栏 -->
+<div class = "container-fluid" style="padding-top: 30pt">
+    <ul class="nav nav-tabs nav-justified">
+        <li role="presentation"><a href="/home">Home</a></li>
+        <li role="presentation"><a href="/article">Article</a></li>
+        <li role="presentation"><a href="#">Album</a></li>
+        <li role="presentation"><a href="#">Funny Things</a></li>
+    </ul>
+</div>
+
+<!-- 文章编辑界面 -->
+<div class = "container-fluid" style="padding-top: 30pt">
+    <!--todo:支持图片上传显示 -->
+    <!--todo:支持加粗/斜体/字号/颜色调整-->
+    <!-- todo:支持markdown编辑 -->
+
+    <!-- 文章题目栏 -->
+    <label for="basic-url">文章题目</label>
+    <div class="row">
+        <div class="col-md-12 col-12">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="新建文章...">
+                <span class="input-group-btn">
+                    <!-- todo:按钮点击完成后变为“编辑”且文本框变为label -->
+                    <button class="btn btn-default" type="button">确认</button>
+                </span>
+            </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+    </div>
+
+    <!-- 文章正文输入框 -->
+    <div class="container-fluid" style="padding-top: 30pt">
+        <form role="form">
+            <div class="form-group">
+                <textarea class="form-control" rows="30"></textarea>
+            </div>
+        </form>
+        <button class="btn btn-default" type="button">完成！</button>
+    </div>
+
+
+
+
+</div>
+
+<!-- 分割线 -->
+<div class="divider"></div>
+
+<!-- funny things-->
+<div class = "container-fluid" style="padding-top: 30pt">
+    <h3 style="text-align: center">Funny works of mine</h3>
+    <div class="center-block">
+        <a class="col-md-3 col-6" style="text-align: center"> LikeCam</a>
+        <a class="col-md-3 col-6" style="text-align: center"> TuTu</a>
+        <a class="col-md-3 col-6" style="text-align: center"> 禾谷科技</a>
+        <a class="col-md-3 col-6" style="text-align: center"> Other</a>
+    </div>
+</div>
+
+<!-- 友情链接-->
+<div class = "container-fluid " style="padding-top: 30pt">
+    <h3 style="text-align: center">Funny works of my fren</h3>
+    <div class="center-block">
+        <a class="col-md-3 col-6" style="text-align: center"> LikeCam</a>
+        <a class="col-md-3 col-6" style="text-align: center"> TuTu</a>
+        <a class="col-md-3 col-6" style="text-align: center"> 禾谷科技</a>
+        <a class="col-md-3 col-6" style="text-align: center"> Other</a>
+    </div>
+</div>
+
+</body>
+<footer class="footer" style="padding-top: 30pt; padding-bottom: 30pt">
+    <div class="container">
+        <div class="row footer-bottom">
+            <ul class="list-inline text-center">
+                <li>Powered by <a href="https://beego.me/" target="_blank">Beego</a> and <a href="https://www.bootcss.com" target="_blank">Bootstrap</a></li>
+                <li>Contact : xytxytxyt@hotmail.com / 13826092013</li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</html>
