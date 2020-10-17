@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"GinBlog/model"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -36,9 +37,12 @@ func NotFoundGet(c *gin.Context){
 func ArticleGet(c *gin.Context){
 	logInf.Println("Entering ArticleGet")
 
-
 	//todo:根据页面号进行文章详情的查询
-	c.HTML(http.StatusNotFound,"article.html",nil)
+	articles := []model.Article{}
+	model.GetArticles(0, &articles)
+	c.HTML(http.StatusNotFound,"article.html",gin.H{
+		"Articles":articles,
+	})
 
 	logInf.Println("Leaving NotFoundGet")
 }

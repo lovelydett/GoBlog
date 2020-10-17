@@ -1,15 +1,23 @@
 package model
 
 import(
-	//"github.com/jinzhu/gorm"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"log"
+	"os"
+
+	// _ "github.com/jinzhu/gorm/dialects/mysql"
 	"time"
 )
 
+//日志
+var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
+var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags | log.Lshortfile)
+
 
 type Category struct {
-	Id int64 `orm:"pk"`
+	ID int64 `gorm:"primary_key"`
 	Name string `json:"name"`
-	Articles []*Article `orm:"reverse(many);null"` //分类允许没有文章
 	//NumofArticles int64 ?
 }
 
@@ -19,11 +27,82 @@ func getTimeStamp () int64 {
 	return time.Now().Unix()
 }
 type Article struct {
-	Id int64 `orm:"pk;index"`
+	ID int64 `gorm:"index;primary_key;"`
 	Title string `json:"title"`
 	Content string `json:"content"`
 	// TimeInit int64 `orm:"index"` 不需要 uuid就是生成时间戳
-	TimeLastEdit int64 `orm:"index"`
-	ReaderCount int64 `orm:"index"`
-	Categories []*Category `orm:"index;rel(m2m);null"` //指针数组，文章可以没有标签
+	TimeLastEdit int64 `gorm:"index;"`
+	ReaderCount int64 `gorm:"index;"`
+	Categories []Category `gorm:"index;many2many:article_category;"` //文章包含并属于多个分类
 }
+
+//初始化model模块：数据库连接，校验等
+var db *gorm.DB
+func init(){
+	logInf.Println("Enter init of model.go")
+
+	//打开链接
+	dbType := "sqlite3"
+	dbName := "database/blogDB.db"
+	db_, err := gorm.Open(dbType, dbName)
+
+	//校验数据库连接
+	if err!=nil {
+		//logErr.Println("Enable to open DB")
+		panic("Enable to open DB: "+dbType+", "+dbName)
+	}
+
+	//赋值给全局变量
+	db = db_
+
+	//迁移
+	db.AutoMigrate(&Category{},&Article{})
+
+	//插入默认数据
+	cat := Category{ID:1, Name:"default"}
+	if db.NewRecord(cat) {
+		//还没有分类
+		logInf.Println("Auto create default category")
+		db.Create(&cat)
+	}
+
+	article := Article{ID:1, Title: "Default title", Content: "Default content"}
+	if db.NewRecord(article) {
+		//还没有文章
+		logInf.Println("Auto create default article")
+		AddArticle(&article)
+	}
+
+	logInf.Println("Leave init of model.go")
+}
+
+func closeDB(){
+	if nil!=db.Close(){
+		logErr.Println("Enable to close db")
+	}
+}
+
+//CRUD方法
+func GetArticles(num int, articles *[]Article){
+	logInf.Println("Enter GetArticle")
+	//if num<=0, get all
+	db.Find(articles)
+	//select * from article
+
+	logInf.Println("Leave GetArticle")
+}
+
+func AddArticleByInf(title string, content string, catId int64){
+	logInf.Println("Enter AddArticleByInf: "+title)
+	//cats := []Category{{ID:catId}}
+	art := Article{ID:getTimeStamp(),Title: title, Content: content}
+	AddArticle(&art)
+	logInf.Println("Leave AddArticleByInf: "+title)
+}
+func AddArticle(article *Article){
+	logInf.Println("Enter AddArticle")
+	db.Create(article)
+	logInf.Println("Leave AddArticle")
+}
+
+
