@@ -14,12 +14,15 @@ func main() {
     //static path
     router.Static("/static", "./static")
 
-    //routers
+    //routers for GET
     router.GET("/", controllers.HomeGet)
     router.GET("index", controllers.HomeGet)
     router.GET("home", controllers.HomeGet)
     router.GET("article", controllers.ArticleGet)
     router.GET("editArticle", controllers.EditArticleGet)
+
+    //routers for POST
+    router.POST("editArticle", controllers.EditArticlePost)
 
     //404 router
     router.NoRoute(controllers.NotFoundGet)

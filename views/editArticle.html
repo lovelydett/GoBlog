@@ -41,7 +41,7 @@
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: 'editArticle',
+            url: "editArticle",
             contentType: "application/json",
             data:JSON.stringify({
                 "isNew": isNew,
@@ -49,7 +49,7 @@
                 "content": content
             }),
             success: function (result) {
-                console.log("data is :" + result)
+                //console.log("data is :" + result)
                 if (result.code == 200) {
                     alert("上传文章内容成功");
                     window.location.href = "/article";
@@ -100,9 +100,8 @@
             <div class="form-group">
                 <textarea id="contentArea" class="form-control" rows="30" ></textarea>
             </div>
-            <button class = "btn btn-default" onclick="finish()">完成</button>
         </form>
-        <button class="btn btn-default" type="button">完成！</button>
+        <button class="btn btn-default" type="button" onclick="finish()">完成！</button>
     </div>
 
 

@@ -83,6 +83,13 @@ func closeDB(){
 }
 
 //CRUD方法
+
+//查询
+//通过精确名称查找文章
+func GetArticleByTitle(title string, article *Article){
+	db.Where("title = ?", title).First(article)
+}
+
 func GetArticles(num int, articles *[]Article){
 	logInf.Println("Enter GetArticle")
 	//if num<=0, get all
@@ -92,6 +99,7 @@ func GetArticles(num int, articles *[]Article){
 	logInf.Println("Leave GetArticle")
 }
 
+
 func AddArticleByInf(title string, content string, catId int64){
 	logInf.Println("Enter AddArticleByInf: "+title)
 	//cats := []Category{{ID:catId}}
@@ -99,10 +107,12 @@ func AddArticleByInf(title string, content string, catId int64){
 	AddArticle(&art)
 	logInf.Println("Leave AddArticleByInf: "+title)
 }
-func AddArticle(article *Article){
+
+func AddArticle(article *Article) {
 	logInf.Println("Enter AddArticle")
 	db.Create(article)
 	logInf.Println("Leave AddArticle")
 }
+
 
 
