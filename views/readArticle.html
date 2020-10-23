@@ -11,6 +11,10 @@
         .active {background-color: #720f92;
             background-size:100%;
         }
+        #mdcontent{
+            height: 100%;
+            width: 100%;
+        }
     </style>
 
     <title>tt小家</title>
@@ -31,6 +35,11 @@
 <script src="https://code.jquery.com/jquery.js"></script>
 <!-- 包括所有已编译的插件 -->
 <script src="/static/js/bootstrap.min.js"></script>
+
+<!-- 用于MD -->
+<script src="/static/js/marked.js"></script>
+<script src="/static/js/ace/ace.js"></script>
+<link href="/static/css/markdown.css" rel="stylesheet" />
 
 <!-- todo: 头版巨幕 -->
 <h1 class="text-center">为什么？为什么？为什么我这么帅！</h1>
@@ -64,13 +73,15 @@
     <!-- 右文章正文 pc9 移动端12-->
     <div class="container-fluid col-md-9 col-12">
         <h4>
-            <strong>文章标题:</strong>
-            <h3>{{.Title}}</h3>
-            <a class="pull-right" href="/editArticle?isNew=no">编辑</a>
+            <strong>文章标题: {{.Title}}</strong>
+            <a class="pull-right" href="/editArticle?isNew=no&id={{.Id}}">编辑</a>
         </h4>
         <div class = "container-fluid">
-            <!-- 文章正文内容 -->
-            {{.Content}}
+            <!-- 文章正文内容 md显示-->
+            <div id="mdcontent" class="markdown-body"></div>
+            <script>
+                $("#mdcontent").html(marked({{.Content}}));
+            </script>
         </div>
     </div>
 

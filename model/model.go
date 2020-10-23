@@ -85,6 +85,11 @@ func closeDB(){
 //CRUD方法
 
 //查询
+//通过ID查文章
+func GetArticleById(id int64, article *Article){
+	db.First(article, id)
+}
+
 //通过精确名称查找文章
 func GetArticleByTitle(title string, article *Article){
 	db.Where("title = ?", title).First(article)

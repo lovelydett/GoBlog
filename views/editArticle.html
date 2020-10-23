@@ -1,151 +1,131 @@
 {{define "editArticle.html"}}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <!-- 页面背景颜色 -->
-    <style type="text/css">
-        .body {background-color: #cba8b8;
-            background-size:100%;
-        }
-        .active {background-color: #720f92;
-            background-size:100%;
-        }
-    </style>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>tt小家-编辑</title>
 
-    <title>tt小家</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 引入 Bootstrap -->
-    <link href="/static/css/bootstrap.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery.js"></script>
+        <script src="/static/js/marked.js"></script>
+        <script src="/static/js/ace/ace.js"></script>
+        <link href="/static/css/markdown.css" rel="stylesheet" />
 
-    <!-- HTML5 Shiv 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
-    <!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
-</head>
-
-<body class = "body" style="padding-top: 30pt;">
-<!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
-<script src="https://code.jquery.com/jquery.js"></script>
-<!-- 包括所有已编译的插件 -->
-<script src="/static/js/bootstrap.min.js"></script>
-
-
-<script type="text/javascript">
-    function finish() {
-        var isNew = "yes";
-        var title = document.getElementById("title").value;
-        var content = document.getElementById("contentArea").value;
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "editArticle",
-            contentType: "application/json",
-            data:JSON.stringify({
-                "isNew": isNew,
-                "title": title,
-                "content": content
-            }),
-            success: function (result) {
-                //console.log("data is :" + result)
-                if (result.code == 200) {
-                    alert("上传文章内容成功");
-                    window.location.href = "/article";
-                }else {
-                    alert("上传文章内容失败: "+result.message)
-                }
+        <style type="text/css">
+            * {
+                margin: 0;
+                padding: 0;
+                outline: none;
+                border-radius: 0;
             }
-        });
-    }
-</script>
 
-<!-- todo: 头版巨幕 -->
-<h1 class="text-center">为什么？为什么？为什么我这么帅！</h1>
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                background-color: #ebebeb;
+            }
+            #toolbar {
+                height: 50px;
+                background-color: #444;
+                width: 100%;
+                color: #a7cdff;
+                line-height: 50px;
+            }
+            #container {
+                overflow: auto;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                top: 50px;
+            }
+            #editor-column,
+            #preview-column {
+                width: 49.5%;
+                height: 100%;
+                overflow: auto;
+                position: relative;
+                background-color: #f4d8d8;
+            }
+            .pull-left {
+                float: left;
+            }
 
-<!-- 导航栏 -->
-<div class = "container-fluid" style="padding-top: 30pt">
-    <ul class="nav nav-tabs nav-justified">
-        <li role="presentation"><a href="/home">Home</a></li>
-        <li role="presentation"><a href="/article">Article</a></li>
-        <li role="presentation"><a href="#">Album</a></li>
-        <li role="presentation"><a href="#">Funny Things</a></li>
-    </ul>
-</div>
+            .pull-right {
+                float: right;
+            }
 
-<!-- 文章编辑界面 -->
-<div class = "container-fluid" style="padding-top: 30pt">
-    <!--todo:支持图片上传显示 -->
-    <!--todo:支持加粗/斜体/字号/颜色调整-->
-    <!-- todo:支持markdown编辑 -->
+            #editor,#preview,#panel-editor,#panel-preview{
+                height: 100%;
+                width: 100%;
+            }
+        </style>
 
-    <!-- 文章题目栏 -->
-    <label for="basic-url">文章题目</label>
-    <div class="row">
-        <div class="col-md-12 col-12">
-            <div class="input-group">
-                <input id = "title" type="text" class="form-control" placeholder="新建文章...">
-                <span class="input-group-btn">
-                    <!-- todo:按钮点击完成后变为“编辑”且文本框变为label -->
-                    <button class="btn btn-default" type="button">确认</button>
-                </span>
-            </div><!-- /input-group -->
-        </div><!-- /.col-lg-6 -->
+    </head>
+    <body>
+    <div id="toolbar">
+        <button class="pull-right" onclick="finish()" style="height: 50px">完成</button>
+        <input id="title" class="pull-right" style="height: 50px"></input>
+        <a class="pull-right">Title:</a>
     </div>
-
-    <!-- 文章正文输入框 -->
-    <div class="container-fluid" style="padding-top: 30pt">
-        <form role="form">
-            <div class="form-group">
-                <textarea id="contentArea" class="form-control" rows="30" ></textarea>
+    <div id="container">
+        <div id="editor-column" class="pull-left">
+            <div id="panel-editor">
+                <!--编辑区-->
+                <div class="editor-content" id="editor" ></div>
             </div>
-        </form>
-        <button class="btn btn-default" type="button" onclick="finish()">完成！</button>
-    </div>
-
-
-
-
-</div>
-
-<!-- 分割线 -->
-<div class="divider"></div>
-
-<!-- funny things-->
-<div class = "container-fluid" style="padding-top: 30pt">
-    <h3 style="text-align: center">Funny works of mine</h3>
-    <div class="center-block">
-        <a class="col-md-3 col-6" style="text-align: center"> LikeCam</a>
-        <a class="col-md-3 col-6" style="text-align: center"> TuTu</a>
-        <a class="col-md-3 col-6" style="text-align: center"> 禾谷科技</a>
-        <a class="col-md-3 col-6" style="text-align: center"> Other</a>
-    </div>
-</div>
-
-<!-- 友情链接-->
-<div class = "container-fluid " style="padding-top: 30pt">
-    <h3 style="text-align: center">Funny works of my fren</h3>
-    <div class="center-block">
-        <a class="col-md-3 col-6" style="text-align: center"> LikeCam</a>
-        <a class="col-md-3 col-6" style="text-align: center"> TuTu</a>
-        <a class="col-md-3 col-6" style="text-align: center"> 禾谷科技</a>
-        <a class="col-md-3 col-6" style="text-align: center"> Other</a>
-    </div>
-</div>
-
-</body>
-<footer class="footer" style="padding-top: 30pt; padding-bottom: 30pt">
-    <div class="container">
-        <div class="row footer-bottom">
-            <ul class="list-inline text-center">
-                <li>Powered by <a href="https://github.com/gin-gonic/gin" target="_blank">Gin</a> and <a href="https://www.bootcss.com" target="_blank">Bootstrap</a></li>
-                <li>Contact : xytxytxyt@hotmail.com</li>
-            </ul>
+        </div>
+        <div id="preview-column" class="pull-right">
+            <div id="panel-preview">
+                <!--显示区-->
+                <div id="preview" class="markdown-body"></div>
+            </div>
         </div>
     </div>
-</footer>
 
-</html>
+
+    <!-- 初始化插件，js脚本要放在body标签的最后！！！-->
+    <script>
+        var acen_edit = ace.edit('editor');
+        acen_edit.setTheme('ace/theme/chrome');
+        acen_edit.getSession().setMode('ace/mode/markdown');
+        acen_edit.renderer.setShowPrintMargin(false);
+        $("#editor").keyup(function() {
+            $("#preview").html(marked(acen_edit.getValue()));
+
+
+        });
+
+        function finish() {
+            var isNew = "yes";
+            var title = document.getElementById("title").value;
+            var content = acen_edit.getValue();
+            console.log("now posting content: ", content);
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "editArticle",
+                contentType: "application/json",
+                data:JSON.stringify({
+                    "isNew": isNew,
+                    "title": title,
+                    "content": content,
+                }),
+                success: function (result) {
+                    //console.log("data is :" + result)
+                    if (result.code == 200) {
+                        alert("上传文章内容成功");
+                        window.location.href = "/article";
+                    }else {
+                        alert("上传文章内容失败: "+result.message)
+                    }
+                }
+            });
+        }
+    </script>
+    </body>
+    </html>
 
 {{end}}

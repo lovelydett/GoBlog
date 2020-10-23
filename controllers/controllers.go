@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 //日志系统
@@ -92,4 +93,29 @@ func EditArticlePost(c *gin.Context){
 	c.HTML(http.StatusOK,"article.html",nil)
 
 	logInf.Println("Leaving EditArticlePost for article: ")
+}
+
+func ReadArticleGet(c *gin.Context){
+	logInf.Println("Entering ReadArticleGet: ")
+
+	//先获取文章id并转int64
+	idStr:=c.Request.FormValue("id")
+	id,_ := strconv.ParseInt(idStr,10,64)
+
+	//通过ID查表
+	art := model.Article{ID:id}
+	model.GetArticleById(id, &art)
+
+	//检验结果
+	if art.Title == "" {
+		logErr.Println("cannot find article by id: ", id)
+	}
+
+	c.HTML(http.StatusOK,"readArticle.html",gin.H{
+		"Id": art.ID,
+		"Title": art.Title,
+		"Content": art.Content,
+	})
+
+	logInf.Println("Leaving ReadArticleGet for article: ", art.Title, " with content: ", art.Content)
 }

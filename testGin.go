@@ -20,6 +20,7 @@ func main() {
     router.GET("home", controllers.HomeGet)
     router.GET("article", controllers.ArticleGet)
     router.GET("editArticle", controllers.EditArticleGet)
+    router.GET("readArticle", controllers.ReadArticleGet)
 
     //routers for POST
     router.POST("editArticle", controllers.EditArticlePost)
