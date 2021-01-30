@@ -4,7 +4,7 @@
 <head>
     <!-- 页面背景颜色 -->
     <style type="text/css">
-        .body {background-color: #cba8b8;
+        .body {background-color: #ffffff;
             background-size:100%;
         }
     </style>
@@ -28,6 +28,19 @@
     <!-- 包括所有已编译的插件 -->
     <script src="/static/js/bootstrap.min.js"></script>
 
+    <!-- 以下部分需要写在引入bootstrap样式的后面-->
+    <style type="text/css">
+        a{color: #151414;}
+        a:link{color: #725353
+        }
+        a:hover{color: #c49393
+        }
+        .img-circle{
+            height: 140px;
+            width: 140px;
+        }
+    </style>
+
     <!-- todo: 头版巨幕 -->
     <h1 class="text-center">为什么？为什么？为什么我这么帅！</h1>
 
@@ -36,9 +49,8 @@
         <ul class="nav nav-tabs nav-justified">
             <li role="presentation" class="active"><a href="#">Home</a></li>
             <li role="presentation"><a href="/article">Article</a></li>
-            <li role="presentation"><a href="#">Album</a></li>
-            <li role="presentation"><a href="#">Funny Things</a></li>
-            <li role="presentation"><a href="/acemd">ACEMD</a></li>
+            <li role="presentation"><a href="#album-div">Album</a></li>
+            <li role="presentation"><a href="#link-div">Funny Things</a></li>
         </ul>
     </div>
 
@@ -97,7 +109,7 @@
     </div>
 
     <!-- 友情链接-->
-    <div class = "container-fluid " style="padding-top: 30pt">
+    <div id="link-div" class = "container-fluid " style="padding-top: 30pt">
         <h3 style="text-align: center">Funny works of my fren</h3>
         <div class="center-block">
             <a class="col-md-3 col-6" style="text-align: center"> LikeCam</a>
@@ -108,9 +120,9 @@
     </div>
 
     <!-- 照片墙 -->
-    <div class = "container-fluid " style="padding-top: 30pt">
+    <div id = "album-div" class = "container-fluid " style="padding-top: 30pt">
         <h3 style="text-align: center">We</h3>
-
+        <img src="/static/img/1.jpg" class="img-circle center-block">
     </div>
 
 
