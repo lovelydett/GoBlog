@@ -10,6 +10,9 @@ import(
 	"time"
 )
 
+//错误标志位，类似gorm的方式来指示操作有无成功
+var Error bool
+
 //日志
 var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
 var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags | log.Lshortfile)
@@ -40,6 +43,9 @@ type Article struct {
 var db *gorm.DB
 func init(){
 	logInf.Println("Enter init of model.go")
+
+	//错误标志置为否
+	Error = false
 
 	//打开链接
 	dbType := "sqlite3"
@@ -118,6 +124,25 @@ func AddArticle(article *Article) {
 	db.Create(article)
 	logInf.Println("Leave AddArticle")
 }
+
+//删除
+//通过id删除文章
+func DeleteArticle(id int64){
+	logInf.Println("Enter DeleteArticle")
+
+	article := &Article{ID:id}
+	//检查是否还有这个id的文章
+	//todo:注意：这是gorm检查错误情况的标准写法，需要都改成这样
+	if err:=db.Delete(article).Error; err!=nil {
+		logInf.Println("Enable to delete article id = ", id)
+		Error = true
+		return
+	}
+
+	Error = false
+	logInf.Println("Leave DeleteArticle")
+}
+
 
 
 

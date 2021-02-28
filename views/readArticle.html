@@ -25,6 +25,28 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+    <script>
+        function deleteArticle() {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "deleteArticle?id={{.Id}}",
+                contentType: "application/json",
+                data:JSON.stringify({
+                    "id": "{{.Id}}",
+                }),
+                success: function (result) {
+                    console.log("success:"+result)
+                    alert("删除文章成功");
+                    window.location.href = "/article";
+                },
+                error: function (result) {
+                    console.log("fail:"+result)
+                    alert("删除文章失败: "+result.message)
+                }
+            });
+        }
+    </script>
 </head>
 
 <body class = "body" style="padding-top: 30pt;">
@@ -81,6 +103,8 @@
         <h4>
             <strong>文章标题: {{.Title}}</strong>
             <a class="pull-right" href="/editArticle?isNew=no&id={{.Id}}">编辑</a>
+            <button class="pull-right" name="delete" onclick="deleteArticle()">删除</button>
+
         </h4>
         <div class = "container-fluid">
             <!-- 文章正文内容 md显示-->

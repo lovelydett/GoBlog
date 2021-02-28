@@ -24,6 +24,7 @@ func main() {
 
     //routers for POST
     router.POST("editArticle", controllers.EditArticlePost)
+    router.POST("deleteArticle", controllers.DeleteArticlePost)
 
     //404 router
     router.NoRoute(controllers.NotFoundGet)
