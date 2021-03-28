@@ -21,10 +21,12 @@ func main() {
     router.GET("article", controllers.ArticleGet)
     router.GET("editArticle", controllers.EditArticleGet)
     router.GET("readArticle", controllers.ReadArticleGet)
+    router.GET("login", controllers.LoginGet)
 
     //routers for POST
     router.POST("editArticle", controllers.EditArticlePost)
     router.POST("deleteArticle", controllers.DeleteArticlePost)
+    router.POST("login", controllers.LoginPost)
 
     //404 router
     router.NoRoute(controllers.NotFoundGet)

@@ -102,8 +102,10 @@
     <div class="container-fluid col-md-9 col-12">
         <h4>
             <strong>文章标题: {{.Title}}</strong>
-            <a class="pull-right" href="/editArticle?isNew=no&id={{.Id}}">编辑</a>
-            <button class="pull-right" name="delete" onclick="deleteArticle()">删除</button>
+            {{if .IsLogin}}
+                <a class="pull-right" href="/editArticle?isNew=no&id={{.Id}}">编辑</a>
+                <button class="pull-right" name="delete" onclick="deleteArticle()">删除</button>
+            {{end}}
 
         </h4>
         <div class = "container-fluid">

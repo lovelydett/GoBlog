@@ -7,20 +7,37 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 //日志系统
 var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
 var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags | log.Lshortfile)
 
+//cookie判断
+func isLogin(c *gin.Context)bool{
+	_, e := c.Cookie("adminCookie")
+	return e==nil
+}
+
 //home页面的GET请求
 func HomeGet(c *gin.Context){
 	logInf.Println("Entering HomeGet")
 
-	c.HTML(http.StatusOK,"home.html",nil)
-	//c.String(http.StatusOK,"ok")
+	//附带上登录状态信息以便于前端可以根据相应的状态显示相应内容
+	c.HTML(http.StatusOK,"home.html", nil)
 
 	logInf.Println("Leaving HomeGet")
+}
+
+//login页面的GET
+func LoginGet(c *gin.Context){
+	logInf.Println("Entering LoginGet")
+
+	c.HTML(http.StatusOK,"login.html",nil)
+	//c.String(http.StatusOK,"ok")
+
+	logInf.Println("Leaving LoginGet")
 }
 
 //404页面的GET请求
@@ -39,7 +56,9 @@ func ArticleGet(c *gin.Context){
 	//todo:根据页面号进行文章详情的查询
 	articles := []model.Article{}
 	model.GetArticles(0, &articles)
+	login := isLogin(c)
 	c.HTML(http.StatusOK,"article.html",gin.H{
+		"IsLogin" : login,
 		"Articles":articles,
 	})
 
@@ -80,7 +99,7 @@ func EditArticlePost(c *gin.Context){
 		return
 	}
 
-	logInf.Println("JSON: "+artJson.IsNew+", "+artJson.Title)
+	//logInf.Println("JSON: "+artJson.IsNew+", "+artJson.Title)
 	if "yes" == artJson.IsNew {
 		logInf.Println("Inserting into db a new article")
 		//处理新文章入库的流程
@@ -116,6 +135,7 @@ func ReadArticleGet(c *gin.Context){
 	}
 
 	c.HTML(http.StatusOK,"readArticle.html",gin.H{
+		"IsLogin" : isLogin(c),
 		"Id": art.ID,
 		"Title": art.Title,
 		"Content": art.Content,
@@ -139,7 +159,7 @@ func DeleteArticlePost(c *gin.Context){
 
 	//检查model模块的全局变量Error，看看是否有异常发生
 	if model.Error{
-		//返回json的统一格式：{code:200,obj:{status:0(成功)/1（失败）,message:"content",data:"content"}}
+		//返回json的统一格式：{code:200,obj:{status:0(成功)/-1（失败）,message:"content",data:"content"}}
 		c.JSON(http.StatusOK,gin.H{"status":1,"message":"Error deleting article","data":""})
 	}else{
 		c.JSON(http.StatusOK,gin.H{"status":0,"message":"Article deleted","data":""})
@@ -147,4 +167,21 @@ func DeleteArticlePost(c *gin.Context){
 
 
 	logInf.Println("Leaving DeleteArticlePost for article id = : ", id)
+}
+
+//login的POST请求（登录）
+func LoginPost(c *gin.Context){
+	logInf.Println("Entering LoginPost")
+
+	//从url请求中获取密码
+	pwStr:=c.Request.FormValue("pw")
+	if strings.Compare(pwStr, "981123")==0 {
+		//设置一条名叫adminCookie的cookie
+		c.SetCookie("adminCookie", "tt", 3600, "/", "localhost", false, true)
+		c.JSON(200, gin.H{"status":0,"message":"Login Successful","data":""})
+	}else{
+		c.JSON(200, gin.H{"status":-1,"message":"Wrong Password","data":""})
+	}
+
+	logInf.Println("Leaving LoginPost")
 }

@@ -1,0 +1,72 @@
+{{define "login.html"}}
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <!-- JQuery引用需要放在最前面 -->
+        <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+        <!-- 页面背景颜色 -->
+        <style type="text/css">
+            .body {background-color: #ffffff;
+                background-size:100%;
+            }
+        </style>
+
+        <title>tt小家</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- 引入 Bootstrap -->
+        <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+        <!-- HTML5 Shiv 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+        <!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script>
+            function login(){
+                var pw = document.getElementById("pw").value;
+                console.log("submitted login request");
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "login?pw="+pw,
+                    contentType: "application/json",
+                    data:JSON.stringify({
+                        "pw": pw,
+                    }),
+                    success: function (result) {
+                        alert("啊！检测到一个宝贝");
+                        window.location.href = "/home";
+                    },
+                    error: function (result) {
+                        alert("走开你不是我的宝贝"+result.message)
+                    }
+                });
+            }
+        </script>
+    </head>
+
+    <body>
+    <form action="" method="post" id="form"> <!--账号密码登录的一个from表单-->
+        <input id="pw" type="text"class="input" placeholder="pw"/>
+        <button type="button" id="btn" onclick="login()">Login</button>
+        <!--简单来讲就是一个大的方块（wrap）包含了title，infor，from三大块的信息，from中又包含了账号，密码，登录三个块块-->
+    </form>
+    </body>
+
+
+    <footer class="footer" style="padding-top: 30pt; padding-bottom: 30pt">
+        <div class="container">
+            <div class="row footer-bottom">
+                <ul class="list-inline text-center">
+                    <li>Powered by <a href="https://github.com/gin-gonic/gin" target="_blank">Gin</a> and <a href="https://www.bootcss.com" target="_blank">Bootstrap</a></li>
+                    <li>Contact : xytxytxyt@hotmail.com</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    </html>
+
+{{end}}

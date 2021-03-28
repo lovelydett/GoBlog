@@ -61,7 +61,15 @@
 
         <!-- 右文章列表 pc9 移动端12-->
         <div class="list-group col-md-9 col-12">
-            <h4><strong>Articles with tag: </strong><a class="pull-right" href="/editArticle?isNew=yes">新建</a></h4>
+            <h4>
+                <strong>Articles with tag: </strong>
+                {{if .IsLogin}}
+                    <a class="pull-right" href="/editArticle?isNew=yes">新建</a>
+                {{else}}
+                    <a class="pull-right" href="/login">登录</a>
+                {{end}}
+
+            </h4>
             {{range .Articles}}
             <a href="/readArticle?id={{.ID}}" class="list-group-item">
                 <h4 class="list-group-item-heading">{{.Title}}</h4>
