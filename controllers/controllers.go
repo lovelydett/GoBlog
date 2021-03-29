@@ -68,21 +68,35 @@ func ArticleGet(c *gin.Context){
 //editArticle页面的GET请求
 func EditArticleGet(c *gin.Context){
 	logInf.Println("Entering EditArticleGet for article: ")
-
-	if "yes" == c.Request.FormValue("isNew") {
-		logInf.Println("creating a new article")
-		//处理编辑新建一个文章的页面
-	}else{
+	isNew := ("yes" == c.Request.FormValue("isNew"))
+	article := &model.Article{}
+	if !isNew {
+		//处理编辑旧文章的页面
 		logInf.Println("editing an existing article: ")
-		//todo:处理编辑旧文章的页面
+
+		//解析url参数，先获取文章id并转为int64
+		idStr := c.Request.FormValue("id")
+		id, _ := strconv.ParseInt(idStr, 10, 64)
+
+		//查表，获取文章title和content
+		article.ID = id
+		model.GetArticleById(id, article)
 	}
-	c.HTML(http.StatusOK,"editArticle.html",nil)
+
+	//模板传参
+	c.HTML(http.StatusOK, "editArticle.html", gin.H{
+		"IsNew" : isNew,
+		"Id" : article.ID,
+		"Title" : article.Title,
+		"Content" : article.Content,
+	})
 
 	logInf.Println("Leaving EditArticleGet for article: ")
 }
 
 type EditArtJson struct{
 	IsNew string `json:"isNew"`
+	IdStr string `json:"id"`
 	Title string `json:"title"`
 	Content string `json:"content"`
 }
@@ -95,25 +109,31 @@ func EditArticlePost(c *gin.Context){
 	if nil!=c.BindJSON(&artJson){
 		logErr.Println("unable to unmarshal JSON posted from editArticle.html")
 		logInf.Println("Leaving EditArticlePost for article: ")
-		c.JSON(http.StatusOK,gin.H{"status":1, "message":"Unable to post an article", "data":nil})
+		c.JSON(http.StatusOK,gin.H{"status":1, "message":"Unable to post an article, bind JSON error", "data":nil})
 		return
 	}
 
-	//logInf.Println("JSON: "+artJson.IsNew+", "+artJson.Title)
+	logInf.Println("JSON from editArticle: "+artJson.IdStr, ",", artJson.IsNew, ",",artJson.Title)
 	if "yes" == artJson.IsNew {
 		logInf.Println("Inserting into db a new article")
 		//处理新文章入库的流程
 		model.AddArticleByInf(artJson.Title, artJson.Content,1)
 		//todo:入库失败校验以及对应的状态码返回
 	}else{
-		logInf.Println("Updating an existing article in db: ")
-		//todo:处理编辑旧文章的页面
+		logInf.Println("Updating an existing article in db:", artJson.Title)
+		//处理编辑旧文章的页面
+		id, _ := strconv.ParseInt(artJson.IdStr, 10, 64)
+		article := &model.Article{ID:id, Title: artJson.Title, Content: artJson.Content}
+		model.UpdateArticle(id, article)
+		if model.Error {
+			c.JSON(http.StatusOK,gin.H{"status":1, "message":"Unable to update article "+article.Title, "data":nil})
+			return
+		}
 	}
 
 	//上传文章的ajax请求要的内容是json，所以这里也应该返回json而不是html
 	//要符合格式：
 	c.JSON(http.StatusOK,gin.H{"status":0, "message":"Posted an article", "data":nil})
-
 	logInf.Println("Leaving EditArticlePost for article: ",artJson.Title)
 }
 

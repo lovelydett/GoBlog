@@ -127,7 +127,7 @@ func AddArticle(article *Article) {
 
 //删除
 //通过id删除文章
-func DeleteArticle(id int64){
+func DeleteArticle(id int64) {
 	logInf.Println("Enter DeleteArticle")
 
 	article := &Article{ID:id}
@@ -141,6 +141,19 @@ func DeleteArticle(id int64){
 
 	Error = false
 	logInf.Println("Leave DeleteArticle")
+}
+
+//更新
+//通过id更新文章
+func UpdateArticle(id int64, article *Article) {
+	logInf.Println("Enter UpdateArticle for:", article.Title)
+	if err:=db.Save(article).Error; err!=nil { // Save update value in database, if the value doesn't have primary key, will insert it
+		logInf.Println("Enable to update article:", article.Title)
+		Error = true
+		return
+	}
+	Error = false
+	logInf.Println("Leave UpdateArticle")
 }
 
 

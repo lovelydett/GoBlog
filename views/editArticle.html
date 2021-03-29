@@ -92,26 +92,29 @@
         acen_edit.setTheme('ace/theme/chrome');
         acen_edit.getSession().setMode('ace/mode/markdown');
         acen_edit.renderer.setShowPrintMargin(false);
+        {{if .IsNew}}
+        {{else}}
+            document.getElementById("title").value = "{{.Title}}";
+            acen_edit.setValue("{{.Content}}");
+        {{end}}
         $("#editor").keyup(function() {
             $("#preview").html(marked(acen_edit.getValue()));
-
-
         });
 
         function finish() {
-            var isNew = "yes";
-            var title = document.getElementById("title").value;
-            var content = acen_edit.getValue();
-            console.log("now posting content: ", content);
+            var newTitle = document.getElementById("title").value;
+            var newContent = acen_edit.getValue();
+            console.log("now posting content to article: ", newTitle);
             $.ajax({
                 type: "POST",
                 dataType: "json",
                 url: "editArticle",
                 contentType: "application/json",
                 data:JSON.stringify({
-                    "isNew": isNew,
-                    "title": title,
-                    "content": content,
+                    "isNew": "{{.IsNew}}",
+                    "id" : "{{.Id}}",
+                    "title": newTitle,
+                    "content": newContent,
                 }),
                 success: function (result) {
                     //console.log("data is :" + result)
