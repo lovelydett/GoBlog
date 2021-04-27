@@ -59,14 +59,10 @@
 
         <!-- 左分类列表 pc占3 移动端占满12列-->
         <div class="list-group col-md-3 col-12">
-            <h4 style="text-align: center"><strong>文章分类</strong></h4>
-            <a href="#" class="list-group-item disabled">
-                C++
-            </a>
-            <a href="#" class="list-group-item">Go</a>
-            <a href="#" class="list-group-item">前端</a>
-            <a href="#" class="list-group-item">算法数据结构</a>
-            <a href="#" class="list-group-item">其他</a>
+            <h4 style="text-align: center"><strong>Categories</strong></h4>
+            {{range .Categories}}
+            <a href="#" class="list-group-item disabled">{{.Name}}</a>
+            {{end}} <!-- range .Categories-->
         </div>
 
 
