@@ -134,7 +134,7 @@ func EditArticlePost(c *gin.Context) {
 	if "yes" == artJson.IsNew {
 		logInf.Println("Inserting into db a new article")
 		//处理新文章入库的流程
-		model.AddArticleByInf(artJson.Title, artJson.Content, 1)
+		model.AddArticleByInf(artJson.Title, artJson.Content)
 		//todo:入库失败校验以及对应的状态码返回
 	} else {
 		logInf.Println("Updating an existing article in db:", artJson.Title)

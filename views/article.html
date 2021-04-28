@@ -21,7 +21,28 @@
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <!-- 包括所有已编译的插件 -->
     <script src="/static/js/bootstrap.min.js"></script>
+    
+    <!-- 以下腳本處理分類標籤 -->
+    <script>
+        categories = [];
+        chosen = 0;
 
+        function pickCategory(name, pick = true) {
+            for (var i = 0; i < categories.length; i++) {
+                if (categories[i][0] == name) {
+                    categories[i][1] = true;
+                    chosen++;
+                    break;
+                }
+            }
+            categories.forEach(function(vec2){
+                if (vec2[1] == true) {
+                    console.log(vec2[0] + " is chosen.");
+                }
+            });
+        }
+    </script>
+    
     <!-- 以下部分需要写在引入bootstrap样式的后面-->
     <style type="text/css">
         a{color: #151414;}
@@ -122,7 +143,7 @@
         <div class="row footer-bottom">
             <ul class="list-inline text-center">
                 <li>Powered by <a href="https://github.com/gin-gonic/gin" target="_blank">Gin</a> and <a href="https://www.bootcss.com" target="_blank">Bootstrap</a></li>
-                <li>Contact : xytxytxyt@hotmail.com</li>
+                <li>Contact : xyt@bupt.cn</li>
             </ul>
         </div>
     </div>

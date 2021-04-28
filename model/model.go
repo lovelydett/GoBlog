@@ -125,9 +125,25 @@ func GetCategories(categories *[]Category) {
 	logInf.Println("Leave GetCategories")
 }
 
-func AddArticleByInf(title string, content string, catId int64) {
+// 按分類查找文章
+func GetArticlesByCategory(category *Category, articles *[]Article) {
+	logInf.Println("Enter GetArticleByCategory")
+	db.Model(category).Association("Article").Find(articles)
+	logInf.Println("Leave GetArticleByCategory")
+}
+
+// 查找一篇文章的所有分類
+func GetCategoriesOfArticle(article *Article, categories *[]Category) {
+	logInf.Println("Enter GetCategoriesOfArticle")
+	db.Model(article).Association("Category").Find(categories)
+	logInf.Println("Leave GetCategoriesOfArticle")
+}
+
+// 增加
+// 增加一篇文章
+func AddArticleByInf(title string, content string) {
 	logInf.Println("Enter AddArticleByInf: " + title)
-	//cats := []Category{{ID:catId}}
+	// 文章默認沒有任何分類
 	art := Article{ID: getTimeStamp(), Title: title, Content: content}
 	addArticle(&art)
 	logInf.Println("Leave AddArticleByInf: " + title)
@@ -137,8 +153,22 @@ func addArticle(article *Article) {
 	db.Create(article)
 }
 
-//删除
-//通过id删除文章
+// 增加一個分類
+func AddCategoryByName(name string) {
+	logInf.Println("Enter AddCategoryByName: " + name)
+	db.Create(&Category{Name: name})
+	logInf.Println("Leave AddCategoryByName: " + name)
+}
+
+// 增加一條文章-分類關系
+func AddArticleCategoryAssociation(article *Article, category *Category) {
+	logInf.Println("Enter AddArticleCategoryAssociation")
+	db.Model(article).Association("Category").Append(category)
+	logInf.Println("Leave AddArticleCategoryAssociation")
+}
+
+// 删除
+// 通过id删除文章
 func DeleteArticle(id int64) {
 	logInf.Println("Enter DeleteArticle")
 
