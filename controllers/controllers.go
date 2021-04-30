@@ -17,8 +17,9 @@ var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
 var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags|log.Lshortfile)
 
 func isLogin(c *gin.Context) bool {
+	_, e_local := c.Cookie("adminCookieLocalTest")
 	_, e := c.Cookie("adminCookie")
-	return e == nil
+	return e == nil || e_local == nil
 }
 
 /*以下處理請求*/
@@ -232,15 +233,17 @@ func DeleteArticlePost(c *gin.Context) {
 	logInf.Println("Leaving DeleteArticlePost for article id = : ", id)
 }
 
-//login的POST请求（登录）
+// login的POST请求（登录）
 func LoginPost(c *gin.Context) {
 	logInf.Println("Entering LoginPost")
 
-	//从url请求中获取密码
+	// 从url请求中获取密码
 	pwStr := c.Request.FormValue("pw")
 	if strings.Compare(pwStr, "981123") == 0 {
-		//设置一条名叫adminCookie的cookie
-		c.SetCookie("adminCookie", "tt", 3600, "/", "localhost", false, true)
+		// 设置cookie
+		// TODO: read domain from config files.
+		c.SetCookie("adminCookieLocalTest", "tt", 3600, "/", "localhost", false, true) // domain set for local test
+		c.SetCookie("adminCookie", "tt", 3600, "/", "www.", false, true)
 		c.JSON(200, gin.H{"status": 0, "message": "Login Successful", "data": ""})
 	} else {
 		c.JSON(200, gin.H{"status": 1, "message": "Wrong Password", "data": ""})
