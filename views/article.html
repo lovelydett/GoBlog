@@ -26,6 +26,12 @@
     <script>
         categories = [];
         chosen = 0;
+        {{range .Categories}}
+        categories.push(['{{.Name}}', true]);
+        {{end}}
+        categories.forEach(function(vec2){
+            console.log(vec2[0]);
+        });
 
         function pickCategory(name, pick = true) {
             for (var i = 0; i < categories.length; i++) {
@@ -72,7 +78,7 @@
         <div class="list-group col-md-3 col-12">
             <h4 style="text-align: center"><strong>Categories</strong></h4>
             {{range .Categories}}
-            <a href="#" class="list-group-item disabled">{{.Name}}</a>
+            <a id="category_{{.Name}}" href="#" onclick="pickCategory('{{.Name}}')" class="list-group-item disabled">{{.Name}}</a>
             {{end}} <!-- range .Categories-->
         </div>
 
@@ -85,7 +91,6 @@
                 {{else}}
                     <a class="pull-right" href="/login">登录</a>
                 {{end}}
-
             </h4>
             {{range .Articles}}
             <a href="/readArticle?id={{.ID}}" class="list-group-item">
@@ -99,6 +104,17 @@
         <div class = "container-fluid col-md-12 ">
             <nav aria-label="..." class="pager">
                 <ul class="pagination">
+                    <li class="enabled"><a id="prev-page" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li class="active"><a href="#"><span class="sr-only">(current)</span>{{.PageNum}}</a></li>
+                    <li class="enabled"><a id="next-page" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                </ul>
+            </nav>
+            <a class="col-md-12 col-12" style="text-align: center">{{.PageNum}}/{{.NumPage}}</a>
+        </div>
+        <!-- 分页 -->
+        <!-- <div class = "container-fluid col-md-12 ">
+            <nav aria-label="..." class="pager">
+                <ul class="pagination">
                     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                     <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
                     <li ><a href="#">2 <span class="sr-only">(current)</span></a></li>
@@ -106,7 +122,7 @@
                     <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
                 </ul>
             </nav>
-        </div>
+        </div> -->
 
     </div>
 
@@ -136,6 +152,22 @@
             <a class="col-md-3 col-6" style="text-align: center"> Other</a>
         </div>
     </div>
+
+    <!-- 以下腳本處理頁編號, 所以需要在加載好頁面元素後執行 -->
+    <script>
+        pageNum = {{.PageNum}};
+        numPage = {{.NumPage}};
+        prev = "#";
+        next = "#";
+        if (pageNum > 1) {
+            prev = "/article?pageNum=" + (pageNum-1)
+        }
+        if (pageNum < numPage) {
+            next = "/article?pageNum=" + (pageNum+1)
+        }
+        document.getElementById("prev-page").attributes["href"].value = prev
+        document.getElementById("next-page").attributes["href"].value = next
+    </script>
 
 </body>
 <footer class="footer" style="padding-top: 30pt; padding-bottom: 30pt">

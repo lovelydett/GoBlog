@@ -3,6 +3,7 @@ package controllers
 import (
 	"GinBlog/model"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -11,26 +12,51 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//日志系统
+// 常量
+const (
+	PAGE_SIZE = 10
+)
+
+// 日志系统
 var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
 var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags|log.Lshortfile)
 
-//cookie判断
+// 上取整
+func ceil(n1, n2 int64) int64 {
+	return int64(math.Ceil(float64(n1) / float64(n2)))
+}
+
+// cookie判断
 func isLogin(c *gin.Context) bool {
 	_, e := c.Cookie("adminCookie")
 	return e == nil
+}
+
+// int64 to int
+func int64ToInt(x int64) int {
+	strInt64 := strconv.FormatInt(x, 10)
+	ret := 0
+	if r, e := strconv.Atoi(strInt64); e == nil {
+		ret = r
+	}
+	return ret
 }
 
 // home页面的GET请求
 func HomeGet(c *gin.Context) {
 	logInf.Println("Entering HomeGet")
 
-	// handle 文章分类标签
+	// 打包分類標籤
 	categories := []model.Category{}
-	model.GetCategories(&categories)
+	model.GetAllCategories(&categories)
+
+	// 打包文章, 首頁顯示最新的10篇文章
+	articles := []model.Article{}
+	model.GetPagedArticles(0, PAGE_SIZE, &articles)
 
 	c.HTML(http.StatusOK, "home.html", gin.H{
 		"Categories": categories,
+		"Articles":   articles,
 	})
 
 	logInf.Println("Leaving HomeGet")
@@ -55,30 +81,50 @@ func NotFoundGet(c *gin.Context) {
 	logInf.Println("Leaving NotFoundGet")
 }
 
-//article页面的GET请求
+// article页面的GET请求
 func ArticleGet(c *gin.Context) {
 	logInf.Println("Entering ArticleGet")
 
-	// handle文章列表
-	// todo:分页显示文章列表
-	articles := []model.Article{}
-	model.GetArticles(0, &articles)
+	// 獲取當前文章總數
+	numArticles := model.GetNumArticles()
+	numPage := ceil(numArticles, PAGE_SIZE)
 
-	// handle分类列表
+	// 解析url參數pageNum
+	pageNum_s := c.Request.FormValue("pageNum")
+	pageNum := int64(0)
+	if len(pageNum_s) > 0 {
+		// 有這個參數且成功解析
+		if pn, err := strconv.ParseInt(pageNum_s, 10, 64); err == nil {
+			pageNum = pn - 1 // 前端[1, numPage] 後端[0, numPage-1]
+		}
+		// 檢查文章總頁數, 如果pageNum溢出則設置爲0
+		if pageNum < 0 || pageNum >= numPage {
+			pageNum = 0
+		}
+	}
+
+	// 獲取第pageNum頁的文章
+	articles := []model.Article{}
+	model.GetPagedArticles(pageNum, PAGE_SIZE, &articles)
+
+	// 獲取分类列表
 	categories := []model.Category{}
-	model.GetCategories(&categories)
+	model.GetAllCategories(&categories)
 
 	// handle登录状态
 	login := isLogin(c)
 
 	// 打包模板内容
 	c.HTML(http.StatusOK, "article.html", gin.H{
-		"IsLogin":    login,
-		"Categories": categories,
-		"Articles":   articles,
+		"IsLogin":     login,
+		"Categories":  categories,
+		"Articles":    articles,
+		"NumArticles": int64ToInt(numArticles),
+		"NumPage":     int64ToInt(numPage),
+		"PageNum":     int64ToInt(pageNum) + 1,
 	})
 
-	logInf.Println("Leaving ArticleGet")
+	logInf.Println("Leaving ArticleGet for ", pageNum, "/", numPage)
 }
 
 //editArticle页面的GET请求

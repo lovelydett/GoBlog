@@ -17,18 +17,19 @@ var Error bool
 var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
 var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags|log.Lshortfile)
 
+// sql表名: categories
 type Category struct {
 	ID   int64  `gorm:"primary_key"`
 	Name string `json:"name"`
-	//NumofArticles int64 ?
 }
 
 //文章id要使用uuid!否则删除不方便，然后在id上建索引
 func getTimeStamp() int64 {
-	time.Sleep(2 * time.Millisecond) //防止重复id，需要吗？看uuid原理
+	time.Sleep(2 * time.Millisecond) //防止重复id，需要吗？
 	return time.Now().Unix()
 }
 
+// sql表名: articles
 type Article struct {
 	ID      int64  `gorm:"index;primary_key;"`
 	Title   string `json:"title"`
@@ -91,6 +92,23 @@ func closeDB() {
 
 //CRUD方法
 
+// 统计数据查询
+// 查询文章总数
+func GetNumArticles() int64 {
+	var ret int64 = 0
+	db.Table("articles").Count(&ret)
+	logInf.Println("Ariticle counted: ", ret)
+	return ret
+}
+
+// 查询分类总数
+func GetNumCategories() int64 {
+	var ret int64 = 0
+	db.Table("categories").Count(&ret)
+	logInf.Println("Category counted: ", ret)
+	return ret
+}
+
 //查询
 //通过ID查文章
 func GetArticleById(id int64, article *Article) {
@@ -102,13 +120,21 @@ func GetArticleByTitle(title string, article *Article) {
 	db.Where("title = ?", title).First(article)
 }
 
-func GetArticles(num int, articles *[]Article) {
-	logInf.Println("Enter GetArticle")
-	//if num<=0, get all
-	//select * from article
+// 查找所有文章
+func GetAllArticles(articles *[]Article) {
+	logInf.Println("Enter GetAllArticles")
 	db.Find(articles)
+	logInf.Println("Leave GetAllArticles")
+}
 
-	logInf.Println("Leave GetArticle")
+// 查找指定頁面的文章
+func GetPagedArticles(pageNum, pageSize int64, articles *[]Article) {
+	logInf.Println("Enter GetPagedArticles at ", pageNum)
+	if pageNum < 0 || pageSize < 1 {
+		logErr.Println("Invalid pageNum,pageSize: ", pageNum, pageSize)
+	}
+	db.Limit(pageSize).Offset(pageNum * pageSize).Order("id desc").Find(articles)
+	logInf.Println("Leave GetPagedArticles")
 }
 
 // 查找指定分类
@@ -119,10 +145,10 @@ func GetCategoryByName(name string, category *Category) {
 }
 
 // 查找所有分类
-func GetCategories(categories *[]Category) {
-	logInf.Println("Enter GetCategories")
+func GetAllCategories(categories *[]Category) {
+	logInf.Println("Enter GetAllCategories")
 	db.Find(categories)
-	logInf.Println("Leave GetCategories")
+	logInf.Println("Leave GetAllCategories")
 }
 
 // 按分類查找文章

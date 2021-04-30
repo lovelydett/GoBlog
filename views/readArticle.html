@@ -87,24 +87,25 @@
 
     <!-- 左分类列表 pc占3 移动端占满12列-->
     <div class="list-group col-md-3 col-12">
-        <h4 style="text-align: center"><strong>文章分类</strong></h4>
+        <h4><strong>Tags:</strong></h4>
         <a href="#" class="list-group-item disabled">
             C++
         </a>
-        <a href="#" class="list-group-item">Go</a>
-        <a href="#" class="list-group-item">前端</a>
-        <a href="#" class="list-group-item">算法数据结构</a>
-        <a href="#" class="list-group-item">其他</a>
+        {{range .Categories}}
+            <a href="#" class="list-group-item disabled">
+            {{.Name}}
+            </a>
+        {{end}}
     </div>
 
 
     <!-- 右文章正文 pc9 移动端12-->
     <div class="container-fluid col-md-9 col-12">
         <h4>
-            <strong>文章标题: {{.Title}}</strong>
+            <strong>{{.Title}}</strong>
             {{if .IsLogin}}
-                <a class="pull-right" href="/editArticle?isNew=no&id={{.Id}}">编辑</a>
-                <button class="pull-right" name="delete" onclick="deleteArticle()">删除</button>
+                <a class="pull-right" href="/editArticle?isNew=no&id={{.Id}}">Edit</a>
+                <button class="pull-right" name="delete" onclick="deleteArticle()">rm -f</button>
             {{end}}
 
         </h4>
