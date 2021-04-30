@@ -206,7 +206,7 @@ func ReadArticleGet(c *gin.Context) {
 		"Content": art.Content,
 	})
 
-	logInf.Println("Leaving ReadArticleGet for article: ", art.Title, " with content: ", art.Content)
+	logInf.Println("Leaving ReadArticleGet for article: ", art.Title, " with content length: ", len(art.Content))
 }
 
 //deleteArticle的POST请求（删除指定id的文章）
