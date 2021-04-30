@@ -243,7 +243,7 @@ func LoginPost(c *gin.Context) {
 		// 设置cookie
 		// TODO: read domain from config files.
 		c.SetCookie("adminCookieLocalTest", "tt", 3600, "/", "localhost", false, true) // domain set for local test
-		c.SetCookie("adminCookie", "tt", 3600, "/", "www.", false, true)
+		c.SetCookie("adminCookie", "tt", 3600, "/", "www.ttlovely.cn", false, true)
 		c.JSON(200, gin.H{"status": 0, "message": "Login Successful", "data": ""})
 	} else {
 		logInf.Println("Failed attempt to login with: ", pwStr)
