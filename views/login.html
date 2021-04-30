@@ -26,7 +26,7 @@
         <script>
             function login(){
                 var pw = document.getElementById("pw").value;
-                console.log("submitted login request");
+                console.log("login attempt with: ", pw);
                 $.ajax({
                     type: "POST",
                     dataType: "json",
@@ -40,7 +40,7 @@
                         window.location.href = "/home";
                     },
                     error: function (result) {
-                        alert("走开你不是我的宝贝"+result.message)
+                        alert("你不是我的宝贝"+result.message)
                     }
                 });
             }
@@ -48,11 +48,12 @@
     </head>
 
     <body>
-    <form action="" method="post" id="form"> <!--账号密码登录的一个from表单-->
+    <div style="padding-top:30pt;width:100%;text-align:center">
+        <form action="" method="post" id="form"> <!--账号密码登录的一个from表单-->
         <input id="pw" type="password"class="input" placeholder="pw"/>
         <button type="button" id="btn" onclick="login()">Login</button>
-        <!--简单来讲就是一个大的方块（wrap）包含了title，infor，from三大块的信息，from中又包含了账号，密码，登录三个块块-->
-    </form>
+        <!--简单来讲就是一个大的方块（wrap）包含了title，infor，from三大块的信息，from中又包含了账号，密码，登录三个块块-->        
+    </div>
     </body>
 
 

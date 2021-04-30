@@ -246,7 +246,8 @@ func LoginPost(c *gin.Context) {
 		c.SetCookie("adminCookie", "tt", 3600, "/", "www.", false, true)
 		c.JSON(200, gin.H{"status": 0, "message": "Login Successful", "data": ""})
 	} else {
-		c.JSON(200, gin.H{"status": 1, "message": "Wrong Password", "data": ""})
+		logInf.Println("Failed attempt to login with: ", pwStr)
+		c.JSON(200, gin.H{"status": 1, "message": "Wrong Password", "data": "You are not my baby"})
 	}
 
 	logInf.Println("Leaving LoginPost")
