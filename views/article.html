@@ -87,15 +87,15 @@
             <h4>
                 <strong>Articles with tag: </strong>
                 {{if .IsLogin}}
-                    <a class="pull-right" href="/editArticle?isNew=yes">新建</a>
+                    <a class="pull-right" href="/editArticle?isNew=yes">New</a>
                 {{else}}
-                    <a class="pull-right" href="/login">登录</a>
+                    <a class="pull-right" href="/login">Login</a>
                 {{end}}
             </h4>
             {{range .Articles}}
             <a href="/readArticle?id={{.ID}}" class="list-group-item">
                 <h4 class="list-group-item-heading">{{.Title}}</h4>
-                <p class="list-group-item-text">概要功能暂未实现...</p>
+                <p class="list-group-item-text">{{.Preview}}...</p>
             </a>
             {{end}} <!-- range -->
         </div>

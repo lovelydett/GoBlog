@@ -1,6 +1,7 @@
 package model
 
 import (
+	. "GinBlog/global"
 	"log"
 	"os"
 	"time"
@@ -34,6 +35,7 @@ type Article struct {
 	ID      int64  `gorm:"index;primary_key;"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
+	Preview string `json:"preview"`
 	// TimeInit int64 `orm:"index"` 不需要 uuid就是生成时间戳
 	TimeLastEdit int64      `gorm:"index;"`
 	ReaderCount  int64      `gorm:"index;"`
@@ -74,7 +76,7 @@ func init() {
 		db.Create(&cat)
 	}
 
-	article := Article{ID: 1, Title: "Default title", Content: "Default content"}
+	article := Article{ID: 1, Title: "Default title", Content: "Default content", Preview: "Default preview"}
 	if db.NewRecord(article) {
 		//还没有文章
 		logInf.Println("Auto create default article")
@@ -170,7 +172,12 @@ func GetCategoriesOfArticle(article *Article, categories *[]Category) {
 func AddArticleByInf(title string, content string) {
 	logInf.Println("Enter AddArticleByInf: " + title)
 	// 文章默認沒有任何分類
-	art := Article{ID: getTimeStamp(), Title: title, Content: content}
+	art := Article{
+		ID:      getTimeStamp(),
+		Title:   title,
+		Content: content,
+		Preview: content[:Min(len(content), PREVIEW_STRING_LENGTH)],
+	}
 	addArticle(&art)
 	logInf.Println("Leave AddArticleByInf: " + title)
 }

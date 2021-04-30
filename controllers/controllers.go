@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"GinBlog/model"
+	. "GinBlog/global"
+	. "GinBlog/model"
 	"log"
-	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -12,47 +12,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 常量
-const (
-	PAGE_SIZE = 10
-)
-
-// 日志系统
+/* logging */
 var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
 var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags|log.Lshortfile)
 
-// 上取整
-func ceil(n1, n2 int64) int64 {
-	return int64(math.Ceil(float64(n1) / float64(n2)))
-}
-
-// cookie判断
 func isLogin(c *gin.Context) bool {
 	_, e := c.Cookie("adminCookie")
 	return e == nil
 }
 
-// int64 to int
-func int64ToInt(x int64) int {
-	strInt64 := strconv.FormatInt(x, 10)
-	ret := 0
-	if r, e := strconv.Atoi(strInt64); e == nil {
-		ret = r
-	}
-	return ret
-}
-
+/*以下處理請求*/
 // home页面的GET请求
 func HomeGet(c *gin.Context) {
 	logInf.Println("Entering HomeGet")
 
 	// 打包分類標籤
-	categories := []model.Category{}
-	model.GetAllCategories(&categories)
+	categories := []Category{}
+	GetAllCategories(&categories)
 
 	// 打包文章, 首頁顯示最新的10篇文章
-	articles := []model.Article{}
-	model.GetPagedArticles(0, PAGE_SIZE, &articles)
+	articles := []Article{}
+	GetPagedArticles(0, PAGE_SIZE, &articles)
 
 	c.HTML(http.StatusOK, "home.html", gin.H{
 		"Categories": categories,
@@ -86,8 +66,8 @@ func ArticleGet(c *gin.Context) {
 	logInf.Println("Entering ArticleGet")
 
 	// 獲取當前文章總數
-	numArticles := model.GetNumArticles()
-	numPage := ceil(numArticles, PAGE_SIZE)
+	numArticles := GetNumArticles()
+	numPage := Ceil(numArticles, PAGE_SIZE)
 
 	// 解析url參數pageNum
 	pageNum_s := c.Request.FormValue("pageNum")
@@ -103,13 +83,13 @@ func ArticleGet(c *gin.Context) {
 		}
 	}
 
-	// 獲取第pageNum頁的文章
-	articles := []model.Article{}
-	model.GetPagedArticles(pageNum, PAGE_SIZE, &articles)
+	// 獲取第pageNum頁的文章, 增加預覽內容
+	articles := []Article{}
+	GetPagedArticles(pageNum, PAGE_SIZE, &articles)
 
 	// 獲取分类列表
-	categories := []model.Category{}
-	model.GetAllCategories(&categories)
+	categories := []Category{}
+	GetAllCategories(&categories)
 
 	// handle登录状态
 	login := isLogin(c)
@@ -119,9 +99,9 @@ func ArticleGet(c *gin.Context) {
 		"IsLogin":     login,
 		"Categories":  categories,
 		"Articles":    articles,
-		"NumArticles": int64ToInt(numArticles),
-		"NumPage":     int64ToInt(numPage),
-		"PageNum":     int64ToInt(pageNum) + 1,
+		"NumArticles": Int64ToInt(numArticles),
+		"NumPage":     Int64ToInt(numPage),
+		"PageNum":     Int64ToInt(pageNum) + 1,
 	})
 
 	logInf.Println("Leaving ArticleGet for ", pageNum, "/", numPage)
@@ -131,7 +111,7 @@ func ArticleGet(c *gin.Context) {
 func EditArticleGet(c *gin.Context) {
 	logInf.Println("Entering EditArticleGet for article: ")
 	isNew := ("yes" == c.Request.FormValue("isNew"))
-	article := &model.Article{}
+	article := &Article{}
 	if !isNew {
 		//处理编辑旧文章的页面
 		logInf.Println("editing an existing article: ")
@@ -142,7 +122,7 @@ func EditArticleGet(c *gin.Context) {
 
 		//查表，获取文章title和content
 		article.ID = id
-		model.GetArticleById(id, article)
+		GetArticleById(id, article)
 	}
 
 	//模板传参
@@ -180,15 +160,16 @@ func EditArticlePost(c *gin.Context) {
 	if "yes" == artJson.IsNew {
 		logInf.Println("Inserting into db a new article")
 		//处理新文章入库的流程
-		model.AddArticleByInf(artJson.Title, artJson.Content)
+		AddArticleByInf(artJson.Title, artJson.Content)
 		//todo:入库失败校验以及对应的状态码返回
 	} else {
 		logInf.Println("Updating an existing article in db:", artJson.Title)
 		//处理编辑旧文章的页面
 		id, _ := strconv.ParseInt(artJson.IdStr, 10, 64)
-		article := &model.Article{ID: id, Title: artJson.Title, Content: artJson.Content}
-		model.UpdateArticle(id, article)
-		if model.Error {
+		article := &Article{ID: id, Title: artJson.Title, Content: artJson.Content}
+		article.Preview = artJson.Content[:Min(len(artJson.Content), PREVIEW_STRING_LENGTH)]
+		UpdateArticle(id, article)
+		if Error {
 			c.JSON(http.StatusOK, gin.H{"status": 1, "message": "Unable to update article " + article.Title, "data": nil})
 			return
 		}
@@ -209,8 +190,8 @@ func ReadArticleGet(c *gin.Context) {
 	id, _ := strconv.ParseInt(idStr, 10, 64)
 
 	//通过ID查表
-	art := model.Article{ID: id}
-	model.GetArticleById(id, &art)
+	art := Article{ID: id}
+	GetArticleById(id, &art)
 
 	//检验结果
 	if art.Title == "" {
@@ -238,10 +219,10 @@ func DeleteArticlePost(c *gin.Context) {
 
 	//交给model模块删除之
 	logInf.Println("Deleting article with id:", idStr)
-	model.DeleteArticle(id)
+	DeleteArticle(id)
 
 	//检查model模块的全局变量Error，看看是否有异常发生
-	if model.Error {
+	if Error {
 		//返回json的统一格式：{code:200,obj:{status:0(成功)/-1（失败）,message:"content",data:"content"}}
 		c.JSON(http.StatusOK, gin.H{"status": 1, "message": "Error deleting article", "data": ""})
 	} else {
