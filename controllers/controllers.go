@@ -110,7 +110,7 @@ func ArticleGet(c *gin.Context) {
 
 //editArticle页面的GET请求
 func EditArticleGet(c *gin.Context) {
-	logInf.Println("Entering EditArticleGet for article: ")
+	logInf.Println("Entering EditArticleGet")
 	isNew := ("yes" == c.Request.FormValue("isNew"))
 	article := &Article{}
 	if !isNew {
@@ -134,7 +134,34 @@ func EditArticleGet(c *gin.Context) {
 		"Content": article.Content,
 	})
 
-	logInf.Println("Leaving EditArticleGet for article: ")
+	logInf.Println("Leaving EditArticleGet for article: ", article.Title)
+}
+
+//GET for /video
+func VideoGet(c *gin.Context) {
+	logInf.Println("Entering VideoGet: ")
+	isSupported := func(format string) bool {
+		formats := []string{"mp4", "avi"}
+		for i, _ := range formats {
+			if format == formats[i] {
+				return true
+			}
+		}
+		return false
+	}
+	videoName := c.Request.FormValue("video")
+	// here we suppose all suffixes are length = 3
+	if len(videoName) < 4 || !isSupported(videoName[len(videoName) - 3:]){
+		c.HTML(http.StatusNotFound, "404.html", nil)
+		logErr.Println("Unable to locate video:", videoName)
+		return
+	}
+
+	c.HTML(http.StatusOK, "video.html", gin.H{
+		"VideoName": videoName,
+	})
+
+	logInf.Println("Leaving VideoGet: ")
 }
 
 type EditArtJson struct {

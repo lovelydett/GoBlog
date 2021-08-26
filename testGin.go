@@ -1,12 +1,42 @@
 package main
 
 import (
-    "github.com/gin-gonic/gin"
     "GinBlog/controllers"
+    "github.com/gin-gonic/gin"
+    "GinBlog/utils"
+    "os"
+    "log"
 )
 
+/* logging */
+var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
+var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags|log.Lshortfile)
+
+// do init works here
+func Init() error {
+    // 1. check and create the video path
+    working_path, _ := os.Getwd()
+    video_path := working_path + "/static/video"
+    if !utils.IsPathExist(video_path) {
+        err := os.MkdirAll(video_path, 777)
+        if err != nil {
+            logErr.Println("Unable to create video path:", video_path)
+            return err
+        }
+    }
+
+    return nil
+}
+
 func main() {
-    router:=gin.Default()
+
+    err := Init()
+    if err != nil {
+        logErr.Println("Unexpected error during init, program exits")
+        os.Exit(-1)
+    }
+
+    router := gin.Default()
 
     //view path
     router.LoadHTMLGlob("views/*")
@@ -22,6 +52,7 @@ func main() {
     router.GET("editArticle", controllers.EditArticleGet)
     router.GET("readArticle", controllers.ReadArticleGet)
     router.GET("login", controllers.LoginGet)
+    router.GET("video", controllers.VideoGet)
 
     //routers for POST
     router.POST("editArticle", controllers.EditArticlePost)
