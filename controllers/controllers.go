@@ -3,6 +3,7 @@ package controllers
 import (
 	. "GinBlog/global"
 	. "GinBlog/model"
+	"GinBlog/utils"
 	"log"
 	"net/http"
 	"os"
@@ -137,29 +138,32 @@ func EditArticleGet(c *gin.Context) {
 	logInf.Println("Leaving EditArticleGet for article: ", article.Title)
 }
 
+type VideoItem struct {
+	Name string
+	Date string
+}
+
 //GET for /video
 func VideoGet(c *gin.Context) {
 	logInf.Println("Entering VideoGet: ")
-	isSupported := func(format string) bool {
-		formats := []string{"mp4", "avi"}
-		for i, _ := range formats {
-			if format == formats[i] {
-				return true
-			}
-		}
-		return false
-	}
 	videoName := c.Request.FormValue("video")
-	// here we suppose all suffixes are length = 3
-	if len(videoName) < 4 || !isSupported(videoName[len(videoName) - 3:]){
-		c.HTML(http.StatusNotFound, "404.html", nil)
-		logErr.Println("Unable to locate video:", videoName)
-		return
+	if len(videoName) == 0 {
+		// asking for videoList.html
+		working_dir, _ := os.Getwd()
+		videos := utils.GetDirFileNames(working_dir + "/static/video")
+		videoItems := make([]VideoItem, len(videos))
+		for i, _ := range videos {
+			videoItems[i].Name = videos[i]
+			videoItems[i].Date = "2021-08-27"
+		}
+		c.HTML(http.StatusOK, "videoList.html", gin.H{
+			"Videos": videoItems,
+		})
+	} else {
+		c.HTML(http.StatusOK, "videoPlay.html", gin.H{
+			"VideoName": videoName,
+		})
 	}
-
-	c.HTML(http.StatusOK, "video.html", gin.H{
-		"VideoName": videoName,
-	})
 
 	logInf.Println("Leaving VideoGet: ")
 }
