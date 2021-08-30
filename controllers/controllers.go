@@ -1,9 +1,8 @@
 package controllers
 
 import (
-	. "GinBlog/global"
 	. "GinBlog/model"
-	"GinBlog/utils"
+	. "GinBlog/utils"
 	"log"
 	"net/http"
 	"os"
@@ -150,7 +149,7 @@ func VideoGet(c *gin.Context) {
 	if len(videoName) == 0 {
 		// asking for videoList.html
 		working_dir, _ := os.Getwd()
-		videos := utils.GetDirFileNames(working_dir + "/static/video")
+		videos := GetDirFileNames(working_dir + "/static/video")
 		videoItems := make([]VideoItem, len(videos))
 		for i, _ := range videos {
 			videoItems[i].Name = videos[i]

@@ -2,7 +2,7 @@ package main
 
 import (
 	"GinBlog/controllers"
-	"GinBlog/utils"
+	. "GinBlog/utils"
 	"github.com/gin-gonic/gin"
 	"log"
 	"os"
@@ -17,7 +17,7 @@ func Init() error {
 	// 1. check and create the video path
 	working_path, _ := os.Getwd()
 	video_path := working_path + "/static/video"
-	if !utils.IsPathExist(video_path) {
+	if !IsPathExist(video_path) {
 		err := os.MkdirAll(video_path, 777)
 		err = os.Chmod(video_path, 777)
 		if err != nil {

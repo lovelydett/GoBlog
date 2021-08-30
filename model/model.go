@@ -1,7 +1,7 @@
 package model
 
 import (
-	. "GinBlog/global"
+	. "GinBlog/utils"
 	"log"
 	"os"
 	"time"
