@@ -53,6 +53,7 @@ func main() {
 	router.GET("readArticle", controllers.ReadArticleGet)
 	router.GET("login", controllers.LoginGet)
 	router.GET("video", controllers.VideoGet)
+	router.GET("manageCategories", controllers.ManageCategoriesGet)
 
 	//routers for POST
 	router.POST("editArticle", controllers.EditArticlePost)

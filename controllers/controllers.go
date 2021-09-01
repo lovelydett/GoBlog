@@ -15,6 +15,7 @@ import (
 /* logging */
 var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
 var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags|log.Lshortfile)
+var logWarn = log.New(os.Stdout, "[Warn]", log.LstdFlags)
 
 func isLogin(c *gin.Context) bool {
 	_, e_local := c.Cookie("adminCookieLocalTest")
@@ -221,27 +222,45 @@ func ReadArticleGet(c *gin.Context) {
 	id, _ := strconv.ParseInt(idStr, 10, 64)
 
 	//通过ID查表
-	art := Article{ID: id}
-	GetArticleById(id, &art)
+	article := Article{ID: id}
+	GetArticleById(id, &article)
 
 	//检验结果
-	if art.Title == "" {
-		logErr.Println("cannot find article by id: ", id)
+	if article.Title == "" {
+		logErr.Println("Invalid article id: ", id)
+		c.HTML(http.StatusNotFound, "404.html", gin.H{})
+	} else {
+		// Get categories for this article
+		categories := []Category{}
+		GetCategoriesOfArticle(&article, &categories)
+
+		c.HTML(http.StatusOK, "readArticle.html", gin.H{
+			"IsLogin":    isLogin(c),
+			"Id":         article.ID,
+			"Title":      article.Title,
+			"Content":    article.Content,
+			"Categories": categories,
+		})
 	}
 
-	c.HTML(http.StatusOK, "readArticle.html", gin.H{
-		"IsLogin": isLogin(c),
-		"Id":      art.ID,
-		"Title":   art.Title,
-		"Content": art.Content,
-	})
+	logInf.Println("Leaving ReadArticleGet for article: ", article.Title, " with content length: ", len(article.Content))
+}
 
-	logInf.Println("Leaving ReadArticleGet for article: ", art.Title, " with content length: ", len(art.Content))
+// Get request handler for /manageCategories
+func ManageCategoriesGet(c *gin.Context) {
+	logInf.Println("Entering ManageCategoriesGet")
+	if isLogin(c) {
+		c.HTML(http.StatusOK, "manageCategories.html", gin.H{})
+	} else {
+		logWarn.Println("Permission denied!")
+		c.HTML(403, "401.html", gin.H{})
+	}
+	logInf.Println("Leaving ManageCategoriesGet")
 }
 
 //deleteArticle的POST请求（删除指定id的文章）
 func DeleteArticlePost(c *gin.Context) {
-	logInf.Println("Entering DeleteArticlePost: ")
+	logInf.Println("Entering DeleteArticlePost")
 
 	//这里是从url解析参数而不是解析json，别搞错了
 	//先获取文章id并转为int64

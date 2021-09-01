@@ -1,4 +1,5 @@
 {{define "article.html"}}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -76,7 +77,11 @@
 
         <!-- 左分类列表 pc占3 移动端占满12列-->
         <div class="list-group col-md-3 col-12">
-            <h4 style="text-align: center"><strong>Categories</strong></h4>
+            <h4 style="text-align: center"><strong>Categories</strong>
+                {{if .IsLogin}}
+                <a class="pull-left" href="/manageCategories">Manage</a>
+                {{end}}
+            </h4>
             {{range .Categories}}
             <a id="category_{{.Name}}" href="#" onclick="pickCategory('{{.Name}}')" class="list-group-item disabled">{{.Name}}</a>
             {{end}} <!-- range .Categories-->
@@ -95,7 +100,7 @@
             {{range .Articles}}
             <a href="/readArticle?id={{.ID}}" class="list-group-item">
                 <h4 class="list-group-item-heading">{{.Title}}</h4>
-                <p class="list-group-item-text">{{.Preview}}...</p>
+                <p class="list-group-item-text">...</p>
             </a>
             {{end}} <!-- range -->
         </div>
