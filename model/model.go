@@ -58,7 +58,6 @@ func init() {
 
 	//校验数据库连接
 	if err != nil {
-		//logErr.Println("Enable to open DB")
 		panic("Enable to open DB: " + dbType + ", " + dbName)
 	}
 
@@ -209,13 +208,24 @@ func DeleteArticle(id int64) {
 	//检查是否还有这个id的文章
 	//todo:注意：这是gorm检查错误情况的标准写法，需要都改成这样
 	if err := db.Delete(article).Error; err != nil {
-		logInf.Println("Enable to delete article id = ", id)
+		logInf.Println("Unable to delete article id = ", id)
 		Error = true
 		return
 	}
 
 	Error = false
 	logInf.Println("Leave DeleteArticle")
+}
+
+// Delete a category
+func DeleteCategory(name string) {
+	logInf.Println("Deleting category: ", name)
+	if err := db.Delete(Category{}, "name = ?", name).Error; err != nil {
+		logInf.Println("Unable to delete category: ", name)
+		Error = true
+		return
+	}
+	Error = false
 }
 
 //更新

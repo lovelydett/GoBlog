@@ -54,11 +54,13 @@ func main() {
 	router.GET("login", controllers.LoginGet)
 	router.GET("video", controllers.VideoGet)
 	router.GET("manageCategories", controllers.ManageCategoriesGet)
+	router.GET("deleteCategory", controllers.DeleteCategoryGet)
 
 	//routers for POST
 	router.POST("editArticle", controllers.EditArticlePost)
 	router.POST("deleteArticle", controllers.DeleteArticlePost)
 	router.POST("login", controllers.LoginPost)
+	router.POST("addCategory", controllers.AddCategoryPost)
 
 	//404 router
 	router.NoRoute(controllers.NotFoundGet)

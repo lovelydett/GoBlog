@@ -13,8 +13,9 @@ import (
 )
 
 /* logging */
+// Todo: log file name too
 var logInf = log.New(os.Stdout, "[INFO]", log.LstdFlags)
-var logErr = log.New(os.Stdout, "[Error]", log.LstdFlags|log.Lshortfile)
+var logError = log.New(os.Stdout, "[Error]", log.LstdFlags|log.Lshortfile)
 var logWarn = log.New(os.Stdout, "[Warn]", log.LstdFlags)
 
 func isLogin(c *gin.Context) bool {
@@ -182,7 +183,7 @@ func EditArticlePost(c *gin.Context) {
 	//需要解析JSON
 	artJson := EditArtJson{}
 	if nil != c.BindJSON(&artJson) {
-		logErr.Println("unable to unmarshal JSON posted from editArticle.html")
+		logError.Println("unable to unmarshal JSON posted from editArticle.html")
 		logInf.Println("Leaving EditArticlePost for article: ")
 		c.JSON(http.StatusOK, gin.H{"status": 1, "message": "Unable to post an article, bind JSON error", "data": nil})
 		return
@@ -227,7 +228,7 @@ func ReadArticleGet(c *gin.Context) {
 
 	//检验结果
 	if article.Title == "" {
-		logErr.Println("Invalid article id: ", id)
+		logError.Println("Invalid article id: ", id)
 		c.HTML(http.StatusNotFound, "404.html", gin.H{})
 	} else {
 		// Get categories for this article
@@ -250,12 +251,36 @@ func ReadArticleGet(c *gin.Context) {
 func ManageCategoriesGet(c *gin.Context) {
 	logInf.Println("Entering ManageCategoriesGet")
 	if isLogin(c) {
-		c.HTML(http.StatusOK, "manageCategories.html", gin.H{})
+		categories := []Category{}
+		GetAllCategories(&categories)
+		c.HTML(http.StatusOK, "manageCategories.html", gin.H{
+			"Categories": categories,
+		})
 	} else {
 		logWarn.Println("Permission denied!")
 		c.HTML(403, "401.html", gin.H{})
 	}
 	logInf.Println("Leaving ManageCategoriesGet")
+}
+
+// Get handler for /deleteCategory request
+func DeleteCategoryGet(c *gin.Context) {
+	logInf.Println("Entering DeleteCategoryGet")
+	if !isLogin(c) {
+		logWarn.Println("Permission denied!")
+		c.HTML(403, "401.html", gin.H{})
+	}
+	category := c.Request.FormValue("category")
+	DeleteCategory(category)
+	if Error {
+		logError.Println("Unable to delete category: ", category)
+	}
+	categories := []Category{}
+	GetAllCategories(&categories)
+	c.HTML(http.StatusOK, "manageCategories.html", gin.H{
+		"Categories": categories,
+	})
+	logInf.Println("Leaving DeleteCategoryGet")
 }
 
 //deleteArticle的POST请求（删除指定id的文章）
@@ -296,8 +321,37 @@ func LoginPost(c *gin.Context) {
 		c.JSON(200, gin.H{"status": 0, "message": "Login Successful", "data": ""})
 	} else {
 		logInf.Println("Failed attempt to login with: ", pwStr)
-		c.JSON(200, gin.H{"status": 1, "message": "Wrong Password", "data": "You are not my baby"})
+		c.JSON(200, gin.H{"status": -1, "message": "Wrong Password", "data": "You are not my baby"})
 	}
 
 	logInf.Println("Leaving LoginPost")
+}
+
+// Post handler for add a category request
+func AddCategoryPost(c *gin.Context) {
+	logInf.Println("Entering AddCategoryPost")
+
+	// Check login status
+	if !isLogin(c) {
+		logWarn.Println("Permission denied!")
+		c.HTML(403, "401.html", gin.H{})
+	}
+	// Unmarshall JSON
+	type NewCategory struct {
+		Name string `json:"categoryName"`
+	}
+	newCategory := NewCategory{}
+	if nil != c.BindJSON(&newCategory) {
+		logError.Println("Unable to unmarshall JSON posted by add category request")
+		c.JSON(200, gin.H{"status": -1, "message": "Unable to add category", "data": ""})
+		goto LEAVE
+	}
+
+	// Todo: check exist status before adding
+	AddCategoryByName(newCategory.Name)
+	// Response with JSON for ajax request
+	c.JSON(200, gin.H{"status": 0, "message": "Category added: " + newCategory.Name, "data": ""})
+
+LEAVE:
+	logInf.Println("Leaving AddCategoryPost")
 }
