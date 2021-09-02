@@ -162,7 +162,10 @@ func GetArticlesByCategory(category *Category, articles *[]Article) {
 // 查找一篇文章的所有分類
 func GetCategoriesOfArticle(article *Article, categories *[]Category) {
 	logInf.Println("Enter GetCategoriesOfArticle")
-	db.Model(article).Association("Category").Find(categories)
+	// Todo: in model.go the column names "Categories", however it is mapped to "category" in database
+	if err := db.Model(article).Association("Categories").Find(categories).Error; err != nil {
+		logErr.Println("Unable to get categories for article:", article.Title, ",", err.Error())
+	}
 	logInf.Println("Leave GetCategoriesOfArticle")
 }
 
@@ -195,7 +198,7 @@ func AddCategoryByName(name string) {
 // 增加一條文章-分類關系
 func AddArticleCategoryAssociation(article *Article, category *Category) {
 	logInf.Println("Enter AddArticleCategoryAssociation")
-	db.Model(article).Association("Category").Append(category)
+	db.Model(article).Association("Categories").Append(category)
 	logInf.Println("Leave AddArticleCategoryAssociation")
 }
 

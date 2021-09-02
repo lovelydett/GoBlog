@@ -233,14 +233,17 @@ func ReadArticleGet(c *gin.Context) {
 	} else {
 		// Get categories for this article
 		categories := []Category{}
+		allCategories := []Category{}
 		GetCategoriesOfArticle(&article, &categories)
+		GetAllCategories(&allCategories)
 
 		c.HTML(http.StatusOK, "readArticle.html", gin.H{
-			"IsLogin":    isLogin(c),
-			"Id":         article.ID,
-			"Title":      article.Title,
-			"Content":    article.Content,
-			"Categories": categories,
+			"IsLogin":       isLogin(c),
+			"Id":            article.ID,
+			"Title":         article.Title,
+			"Content":       article.Content,
+			"Categories":    categories,
+			"AllCategories": allCategories,
 		})
 	}
 
@@ -281,6 +284,32 @@ func DeleteCategoryGet(c *gin.Context) {
 		"Categories": categories,
 	})
 	logInf.Println("Leaving DeleteCategoryGet")
+}
+
+// Get handler for add a category for an article
+func AddCategoryForArticleGet(c *gin.Context) {
+	logInf.Println("Entering AddCategoryForArticleGet")
+
+	// Check login status
+	if !isLogin(c) {
+		logWarn.Println("Permission denied!")
+		c.HTML(403, "401.html", gin.H{})
+	}
+
+	idStr, categoryName := c.Request.FormValue("id"), c.Request.FormValue("category")
+	if len(idStr) == 0 || len(categoryName) == 0 {
+		logError.Println("Invalid parameters")
+		return
+	}
+	id, _ := strconv.ParseInt(idStr, 10, 64)
+	article := Article{ID: id}
+	category := Category{}
+	GetCategoryByName(categoryName, &category)
+
+	AddArticleCategoryAssociation(&article, &category)
+	ReadArticleGet(c)
+	logInf.Println("Leaving AddCategoryForArticleGet")
+
 }
 
 //deleteArticle的POST请求（删除指定id的文章）

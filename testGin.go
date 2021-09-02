@@ -55,6 +55,7 @@ func main() {
 	router.GET("video", controllers.VideoGet)
 	router.GET("manageCategories", controllers.ManageCategoriesGet)
 	router.GET("deleteCategory", controllers.DeleteCategoryGet)
+	router.GET("addCategoryForArticle", controllers.AddCategoryForArticleGet)
 
 	//routers for POST
 	router.POST("editArticle", controllers.EditArticlePost)
