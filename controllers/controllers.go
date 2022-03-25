@@ -29,15 +29,17 @@ func isLogin(c *gin.Context) bool {
 func HomeGet(c *gin.Context) {
 	logInf.Println("Entering HomeGet")
 
-	// 打包分類標籤
+	// Pack categories
+	// Todo(yuting): render categories
 	categories := []Category{}
 	GetAllCategories(&categories)
 
-	// 打包文章, 首頁顯示最新的10篇文章
+	// Pack latest 10 articles
 	articles := []Article{}
 	GetPagedArticles(0, PAGE_SIZE, &articles)
 
-	c.HTML(http.StatusOK, "home.html", gin.H{
+	c.HTML(http.StatusOK, "home.gohtml", gin.H{
+		"Title":      "Home",
 		"Categories": categories,
 		"Articles":   articles,
 	})
@@ -98,13 +100,19 @@ func ArticleGet(c *gin.Context) {
 	login := isLogin(c)
 
 	// 打包模板内容
-	c.HTML(http.StatusOK, "article.html", gin.H{
+	pageNum++ // We have to increase pageNum by 1, since user start from 1
+	c.HTML(http.StatusOK, "article.gohtml", gin.H{
+		"Title":       "Articles",
 		"IsLogin":     login,
 		"Categories":  categories,
 		"Articles":    articles,
 		"NumArticles": Int64ToInt(numArticles),
 		"NumPage":     Int64ToInt(numPage),
-		"PageNum":     Int64ToInt(pageNum) + 1,
+		"PageNum":     Int64ToInt(pageNum),
+		"IsFirstPage": pageNum == int64(1),
+		"IsLastPage":  pageNum == numPage,
+		"PrevPage":    Int64ToInt(pageNum) - 1,
+		"NextPage":    Int64ToInt(pageNum) + 1,
 	})
 
 	logInf.Println("Leaving ArticleGet for ", pageNum, "/", numPage)

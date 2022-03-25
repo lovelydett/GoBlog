@@ -1,11 +1,10 @@
 package main
 
 import (
-	// "GinBlog/controllers"
+	"GinBlog/controllers"
 	. "GinBlog/utils"
 	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -46,9 +45,8 @@ func main() {
 	router.Static("/static", "./static")
 
 	//routers for GET
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "home.gohtml", gin.H{"Title": "Home Page"})
-	})
+	router.GET("/", controllers.HomeGet)
+	router.GET("/article", controllers.ArticleGet)
 
 	//start the service
 	router.Run(":8080")

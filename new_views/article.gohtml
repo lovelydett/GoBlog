@@ -16,18 +16,21 @@
             <h4 >{{.Title}}</h4>
         </a>
     {{end}} <!-- range -->
-    <a href="/article?pageNum=1">
-        <h6>more...</h6>
-    </a>
+    <div style="text-align: center">
+        {{if .IsFirstPage}}
+        <a disabled="true"><-</a>
+        {{else}}
+        <a href="/article?pageNum={{.PrevPage}}"><-</a>
+        {{end}}
+        <a disabled="true">{{.PageNum}} / {{.NumPage}}</a>
+        {{if .IsLastPage}}
+            <a disabled="true">-></a>
+        {{else}}
+            <a href="/article?pageNum={{.NextPage}}">-></a>
+        {{end}}
+    </div>
 </div>
 
-<div>
-    <h2>Album</h2>
-</div>
-
-<div>
-    <h2>Vedios</h2>
-</div>
 <!-- Page content ends -->
 
 </body>
