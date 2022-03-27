@@ -245,7 +245,7 @@ func ReadArticleGet(c *gin.Context) {
 		GetCategoriesOfArticle(&article, &categories)
 		GetAllCategories(&allCategories)
 
-		c.HTML(http.StatusOK, "readArticle.html", gin.H{
+		c.HTML(http.StatusOK, "read_article.gohtml", gin.H{
 			"IsLogin":       isLogin(c),
 			"Id":            article.ID,
 			"Title":         article.Title,

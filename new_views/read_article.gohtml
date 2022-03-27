@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}} - tt小家</title>
+</head>
+<body>
+
+{{template "page_header"}}
+
+<!-- Page content starts -->
+
+<!-- For MarkDown -->
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="/static/js/marked.js"></script>
+<script src="/static/js/ace/ace.js"></script>
+<link href="/static/css/markdown.css" rel="stylesheet" />
+
+<div>
+    <!-- Article content displayed in .md -->
+    <div id="mdcontent" class="markdown-body"></div>
+    <script>
+        $("#mdcontent").html(marked({{.Content}}));
+    </script>
+</div>
+
+<!-- Page content ends -->
+
+</body>
+{{template "page_footer"}}
+</html>

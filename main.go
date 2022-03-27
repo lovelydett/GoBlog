@@ -47,6 +47,7 @@ func main() {
 	//routers for GET
 	router.GET("/", controllers.HomeGet)
 	router.GET("/article", controllers.ArticleGet)
+	router.GET("readArticle", controllers.ReadArticleGet)
 
 	//start the service
 	router.Run(":8080")
