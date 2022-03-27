@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}} - tt小家</title>
+
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="/static/js/marked.js"></script>
+    <script src="/static/js/ace/ace.js"></script>
+    <link href="/static/css/markdown.css" rel="stylesheet" />
+
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            outline: none;
+            border-radius: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #ebebeb;
+        }
+        #toolbar {
+            height: 50px;
+            background-color: #444;
+            width: 100%;
+            color: #a7cdff;
+            line-height: 50px;
+        }
+        #container {
+            overflow: auto;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: 50px;
+        }
+        #editor-column,
+        #preview-column {
+            width: 49.5%;
+            height: 100%;
+            overflow: auto;
+            position: relative;
+            background-color: #f4d8d8;
+        }
+        .pull-left {
+            float: left;
+        }
+
+        .pull-right {
+            float: right;
+        }
+
+        #editor,#preview,#panel-editor,#panel-preview{
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+<div id="toolbar">
+    <a class="pull-left" style="width: 100px; text-align: center">Title:</a>
+    <input id="title" class="pull-left" style="height: 50px; width: 1000px; font-size: 30px"></input>
+    <button class="pull-left" onclick="finish()" style="height: 50px; width: 100px">Finish</button>
+</div>
+<div id="container">
+    <div id="editor-column" class="pull-left">
+        <div id="panel-editor">
+            <!--编辑区-->
+            <div class="editor-content" id="editor" ></div>
+        </div>
+    </div>
+    <div id="preview-column" class="pull-right">
+        <div id="panel-preview">
+            <!--显示区-->
+            <div id="preview" class="markdown-body"></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 初始化插件，js脚本要放在body标签的最后！！！-->
+<script>
+    var acen_edit = ace.edit('editor');
+    acen_edit.setTheme('ace/theme/chrome');
+    acen_edit.getSession().setMode('ace/mode/markdown');
+    acen_edit.renderer.setShowPrintMargin(false);
+    {{if .IsNew}}
+    {{else}}
+    document.getElementById("title").value = "{{.Title}}";
+    acen_edit.setValue("{{.Content}}");
+    {{end}}
+    $("#editor").keyup(function() {
+        $("#preview").html(marked(acen_edit.getValue()));
+    });
+
+    function finish() {
+        var newTitle = document.getElementById("title").value;
+        var newContent = acen_edit.getValue();
+        console.log("now posting content to article: ", newTitle);
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "editArticle",
+            contentType: "application/json",
+            data:JSON.stringify({
+                "isNew": "{{.IsNew}}",
+                "id" : "{{.Id}}",
+                "title": newTitle,
+                "content": newContent,
+            }),
+            success: function (result) {
+                //console.log("data is :" + result)
+                alert("Upload successful!");
+                window.location.href = "/article";
+            },
+            error: function (result) {
+                //进入error的条件：后端返回的数据和ajax请求的格式不一样，比如请求json返回html
+                alert("Failed to upload!" + result.message);
+                console.log(result)
+            },
+
+        });
+    }
+</script>
+</body>
+</html>
+

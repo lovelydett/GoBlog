@@ -38,17 +38,21 @@ func main() {
 
 	router := gin.Default()
 
-	//view path
+	// view path
 	router.LoadHTMLGlob("new_views/*")
 
-	//static path
+	// static path
 	router.Static("/static", "./static")
 
-	//routers for GET
+	// routers for GET
 	router.GET("/", controllers.HomeGet)
 	router.GET("/article", controllers.ArticleGet)
-	router.GET("readArticle", controllers.ReadArticleGet)
+	router.GET("/readArticle", controllers.ReadArticleGet)
+	router.GET("/editArticle", controllers.EditArticleGet)
 
-	//start the service
+	// routers for POST
+	router.POST("/editArticle", controllers.EditArticlePost)
+
+	// start the service
 	router.Run(":8080")
 }

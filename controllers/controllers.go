@@ -137,7 +137,7 @@ func EditArticleGet(c *gin.Context) {
 	}
 
 	//模板传参
-	c.HTML(http.StatusOK, "editArticle.html", gin.H{
+	c.HTML(http.StatusOK, "edit_article.gohtml", gin.H{
 		"IsNew":   isNew,
 		"Id":      article.ID,
 		"Title":   article.Title,
