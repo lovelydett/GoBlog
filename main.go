@@ -51,6 +51,7 @@ func main() {
 	router.GET("/readArticle", controllers.ReadArticleGet)
 	router.GET("/editArticle", controllers.EditArticleGet)
 	router.GET("/login", controllers.LoginGet)
+	router.GET("/deleteArticle", controllers.DeleteArticleGet)
 
 	// routers for POST
 	router.POST("/editArticle", controllers.EditArticlePost)

@@ -319,23 +319,23 @@ func AddCategoryForArticleGet(c *gin.Context) {
 
 }
 
-//deleteArticle的POST请求（删除指定id的文章）
-func DeleteArticlePost(c *gin.Context) {
+// deleteArticle的GET请求
+func DeleteArticleGet(c *gin.Context) {
 	logInf.Println("Entering DeleteArticlePost")
 
-	//这里是从url解析参数而不是解析json，别搞错了
-	//先获取文章id并转为int64
+	// 这里是从url解析参数而不是解析json，别搞错了
+	// 先获取文章id并转为int64
 	idStr := c.Request.FormValue("id")
 	id, _ := strconv.ParseInt(idStr, 10, 64)
 
-	//交给model模块删除之
+	// 交给model模块删除之
 	logInf.Println("Deleting article with id:", idStr)
 	DeleteArticle(id)
 
-	//检查model模块的全局变量Error，看看是否有异常发生
+	// 检查model模块的全局变量Error，看看是否有异常发生
 	if Error {
-		//返回json的统一格式：{code:200,obj:{status:0(成功)/-1（失败）,message:"content",data:"content"}}
-		c.JSON(http.StatusOK, gin.H{"status": 1, "message": "Error deleting article", "data": ""})
+		// 返回json的统一格式：{code:200,obj:{status:0(成功)/-1（失败）,message:"content",data:"content"}}
+		c.JSON(http.StatusOK, gin.H{"status": -1, "message": "Error deleting article", "data": ""})
 	} else {
 		c.JSON(http.StatusOK, gin.H{"status": 0, "message": "Article deleted", "data": ""})
 	}

@@ -16,6 +16,12 @@
 <script src="/static/js/ace/ace.js"></script>
 <link href="/static/css/markdown.css" rel="stylesheet" />
 
+<div style="text-align: center">
+    <h2>{{.Title}}</h2>
+    <a href="javascript:void(0)" onclick="deleteArticle()" style="text-decoration: none"> - </a>
+    <a href="/editArticle?isNew=no&id={{.Id}}" style="text-decoration: none"> ~ </a>
+</div>
+
 <div>
     <!-- Article content displayed in .md -->
     <div id="mdcontent" class="markdown-body"></div>
@@ -23,6 +29,31 @@
         $("#mdcontent").html(marked({{.Content}}));
     </script>
 </div>
+
+<script>
+    function deleteArticle() {
+        $.ajax({
+            type: "GET",
+            // dataType: "json",
+            url: "/deleteArticle?id={{.Id}}",
+            // contentType: "application/json",
+            // data:JSON.stringify({
+            //    "id": "{{.Id}}",
+            // }),
+            success: function (result_json) {
+                if (result_json.status === 0) {
+                    alert("Article deleted");
+                } else {
+                    alert("Failed to request article delete");
+                }
+                window.location.href = "/article";
+            },
+            error: function (result) {
+                console.log("fail:" + result)
+            }
+        });
+    }
+</script>
 
 <!-- Page content ends -->
 
