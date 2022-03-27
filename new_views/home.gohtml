@@ -12,8 +12,8 @@
 <div>
     <h2>Articles</h2>
     {{range .Articles}}
-        <a href="/readArticle?id={{.ID}}">
-            <h4 >{{.Title}}</h4>
+        <a href="/readArticle?id={{.ID}}" style="text-decoration:none">
+            <h4 ><{{.Title}}></h4>
         </a>
     {{end}} <!-- range -->
     <a href="/article?pageNum=1">

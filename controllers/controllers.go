@@ -36,7 +36,7 @@ func HomeGet(c *gin.Context) {
 
 	// Pack latest 10 articles
 	articles := []Article{}
-	GetPagedArticles(0, PAGE_SIZE, &articles)
+	GetPagedArticles(0, PAGE_SIZE/3, &articles)
 
 	c.HTML(http.StatusOK, "home.gohtml", gin.H{
 		"Title":      "Home",

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{.Title}} - tt小家</title>
+    <title>Edit - {{.Title}} - tt小家</title>
 
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <script src="/static/js/marked.js"></script>
@@ -106,7 +106,7 @@
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: "editArticle",
+            url: "/editArticle",
             contentType: "application/json",
             data:JSON.stringify({
                 "isNew": "{{.IsNew}}",
@@ -115,12 +115,12 @@
                 "content": newContent,
             }),
             success: function (result) {
-                //console.log("data is :" + result)
+                // console.log("data is :" + result)
                 alert("Upload successful!");
                 window.location.href = "/article";
             },
             error: function (result) {
-                //进入error的条件：后端返回的数据和ajax请求的格式不一样，比如请求json返回html
+                // 进入error的条件：后端返回的数据和ajax请求的格式不一样，比如请求json返回html
                 alert("Failed to upload!" + result.message);
                 console.log(result)
             },
