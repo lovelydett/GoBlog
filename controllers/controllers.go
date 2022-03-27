@@ -51,8 +51,7 @@ func HomeGet(c *gin.Context) {
 func LoginGet(c *gin.Context) {
 	logInf.Println("Entering LoginGet")
 
-	c.HTML(http.StatusOK, "login.html", nil)
-	//c.String(http.StatusOK,"ok")
+	c.HTML(http.StatusOK, "login.gohtml", nil)
 
 	logInf.Println("Leaving LoginGet")
 }
@@ -61,7 +60,7 @@ func LoginGet(c *gin.Context) {
 func NotFoundGet(c *gin.Context) {
 	logInf.Println("Entering NotFoundGet for: " + c.Request.URL.String())
 
-	c.HTML(http.StatusNotFound, "404.html", nil)
+	c.HTML(http.StatusNotFound, "404.gohtml", nil)
 
 	logInf.Println("Leaving NotFoundGet")
 }

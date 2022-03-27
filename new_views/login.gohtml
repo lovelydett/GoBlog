@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}} - tt小家</title>
+</head>
+<body>
+
+<!-- Page content starts -->
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<div style="padding-top:30pt;width:100%;text-align:center">
+    <form action="" method="post" id="form">
+        <input id="pw" type="password" class="input" placeholder="pw"/>
+        <button type="button" id="btn" onclick="login()">Login</button>
+    </form>
+</div>
+
+<script>
+    function login(){
+        var pw = document.getElementById("pw").value;
+        console.log("login attempt with: ", pw);
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "login?pw="+pw,
+            contentType: "application/json",
+            data:JSON.stringify({
+                "pw": pw,
+            }),
+            success: function (result_json) {
+                // result_json is already an object, no need to parseJSON!!!
+                if (result_json.status === 0) {
+                    alert("啊！检测到一个宝贝");
+                    window.location.href = "/home";
+                } else {
+                    alert("你不是我的宝贝");
+                    window.location.href = "/login";
+                }
+            },
+            error: function (result) {
+                alert("Failed to send login request" + result.message)
+            }
+        });
+    }
+</script>
+
+<!-- Page content ends -->
+
+</body>
+
+</html>

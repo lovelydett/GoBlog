@@ -46,12 +46,18 @@ func main() {
 
 	// routers for GET
 	router.GET("/", controllers.HomeGet)
+	router.GET("/home", controllers.HomeGet)
 	router.GET("/article", controllers.ArticleGet)
 	router.GET("/readArticle", controllers.ReadArticleGet)
 	router.GET("/editArticle", controllers.EditArticleGet)
+	router.GET("/login", controllers.LoginGet)
 
 	// routers for POST
 	router.POST("/editArticle", controllers.EditArticlePost)
+	router.POST("/login", controllers.LoginPost)
+
+	// 404
+	router.NoRoute(controllers.NotFoundGet)
 
 	// start the service
 	router.Run(":8080")
