@@ -19,7 +19,7 @@
 <div style="text-align: center">
     <h2>{{.Title}}</h2>
     {{if .IsLogin}}
-        <a href="javascript:void(0)" onclick="deleteArticle()" style="text-decoration: none"> - </a>
+{{/*        <a href="javascript:void(0)" onclick="deleteArticle()" style="text-decoration: none"> - </a>*/}}
         <a href="/editArticle?isNew=no&id={{.Id}}" style="text-decoration: none"> ~ </a>
     {{end}}
 </div>
