@@ -51,7 +51,8 @@ func main() {
 	router.GET("/readArticle", controllers.ReadArticleGet)
 	router.GET("/editArticle", controllers.EditArticleGet)
 	router.GET("/login", controllers.LoginGet)
-	router.GET("/deleteArticle", controllers.DeleteArticleGet)
+	// Yuting@2022.4.18: disable delete article API for now.
+	// router.GET("/deleteArticle", controllers.DeleteArticleGet)
 
 	// routers for POST
 	router.POST("/editArticle", controllers.EditArticlePost)

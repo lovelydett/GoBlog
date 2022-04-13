@@ -10,7 +10,7 @@
 
 <!-- Page content starts -->
 <div>
-    <h2>Articles {{if .IsLogin}} <a class="pull-left" href="/editArticle" style="text-decoration: none"> + </a> {{end}}</h2>
+    <h2>Articles {{if .IsLogin}} <a class="pull-left" href="/editArticle?isNew=true" style="text-decoration: none"> + </a> {{end}}</h2>
     {{range .Articles}}
         <a href="/readArticle?id={{.ID}}">
             <h4 >{{.Title}}</h4>

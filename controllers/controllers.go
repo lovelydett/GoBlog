@@ -120,7 +120,7 @@ func ArticleGet(c *gin.Context) {
 //editArticle页面的GET请求
 func EditArticleGet(c *gin.Context) {
 	logInf.Println("Entering EditArticleGet")
-	isNew := ("yes" == c.Request.FormValue("isNew"))
+	isNew := ("true" == c.Request.FormValue("isNew"))
 	article := &Article{}
 	if !isNew {
 		//处理编辑旧文章的页面
@@ -197,7 +197,7 @@ func EditArticlePost(c *gin.Context) {
 	}
 
 	logInf.Println("JSON from editArticle: "+artJson.IdStr, ",", artJson.IsNew, ",", artJson.Title)
-	if "yes" == artJson.IsNew {
+	if "true" == artJson.IsNew {
 		logInf.Println("Inserting into db a new article")
 		//处理新文章入库的流程
 		AddArticleByInf(artJson.Title, artJson.Content)
