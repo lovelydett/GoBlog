@@ -1,0 +1,14 @@
+{{define "videoPlay"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}} - tt小家</title>
+</head>
+<body>
+<video src="/static/video/{{.VideoName}}" height="680" width="960" controls>
+    <p>Your browser may not support video tag</p>
+</video>
+</body>
+</html>
+{{end}}

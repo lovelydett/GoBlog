@@ -162,13 +162,16 @@ func VideoGet(c *gin.Context) {
 		videoItems := make([]VideoItem, len(videos))
 		for i, _ := range videos {
 			videoItems[i].Name = videos[i]
+			// Todo: save video meta in DB
 			videoItems[i].Date = "2021-08-27"
 		}
-		c.HTML(http.StatusOK, "videoList.html", gin.H{
+		c.HTML(http.StatusOK, "videoList", gin.H{
+			"Title":  "Video List",
 			"Videos": videoItems,
 		})
 	} else {
-		c.HTML(http.StatusOK, "videoPlay.html", gin.H{
+		c.HTML(http.StatusOK, "videoPlay", gin.H{
+			"Title":     videoName,
 			"VideoName": videoName,
 		})
 	}
