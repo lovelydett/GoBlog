@@ -53,7 +53,7 @@ func main() {
 	router.GET("/login", controllers.LoginGet)
 	// Yuting@2022.4.18: disable delete article API for now.
 	// router.GET("/deleteArticle", controllers.DeleteArticleGet)
-	router.GET("/videoList", controllers.VideoGet)
+	router.GET("/video", controllers.VideoGet)
 
 	// routers for POST
 	router.POST("/editArticle", controllers.EditArticlePost)
